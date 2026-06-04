@@ -100,3 +100,4 @@ finally:
     cps.HRIF_DisConnect(0)
     cap.release()
     cv2.destroyAllWindows()
+    
