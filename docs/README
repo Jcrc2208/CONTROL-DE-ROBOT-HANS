@@ -1,0 +1,73 @@
+#OBJETIVO DEL PROYECTO 
+"""
+sistema de visoon artificial con un cobot usando una pc o controlador de por medio para detectar OBJETIVOS Y ENVIAR C OORDENADAS AL ROBOT VIA ETHERNET (TPC/IP)
+Fase 1: Desarrollo de un servidor TCP/IP en Python para recibir coordenadas.
+Fase 2: Implementación de un sistema de visión artificial utilizando OpenCV para detectar objetos y calcular sus coordenadas.
+Fase 3: Integración del sistema de visión con el servidor TCP/IP para enviar las coordenadas detectadas al cobot.   
+FASE 4: Pruebas y ajustes para asegurar la precisión y velocidad del sistema en tiempo real.    
+FASE 5: Documentación y presentación del proyecto.
+"""
+
+
+
+"""INSTRUCCIONES DE USO
+1. Ejecutar el servidor TCP/IP:
+   - Abre una terminal y navega al directorio del proyecto.
+   - Ejecuta el comando: python servidor_dummy.py
+   - El servidor estará escuchando en
+
+2. Ejecutar el sistema de visión artificial:
+   - Abre otra terminal y navega al directorio del proyecto.    
+    - Ejecuta el comando: python control_IA.py
+    - Asegúrate de que la cámara esté conectada y funcionando.
+3. Observa la salida:
+    - En la terminal del servidor, verás las coordenadas recibidas cada vez que se detecte un objeto.
+    - En la ventana de video, verás el seguimiento del objeto detectado con sus coordenadas y dimensiones en centímetros.
+NOTA: Para una mejor experiencia, se recomienda usar una cámara local o reducir la resolución de la transmisión para mejorar la velocidad de procesamiento, especialmente si se utiliza una cámara IP con latencia.
+
+4. Para salir del sistema de visión, presiona la tecla 'q' en la ventana de video.
+"""
+
+
+"""
+paso de configuracion del proyecto:
+1. Configura tu entorno de desarrollo:
+   - Asegúrate de tener Python instalado (preferiblemente Python 3.8 o superior).
+   - Instala las dependencias necesarias utilizando pip:
+     pip install opencv-python numpy
+2. Configura la cámara:
+   - Si usas una cámara local, asegúrate de que esté conectada y funcionando
+    - Si usas una cámara IP, actualiza la URL en control_IA.py con la dirección correcta de tu cámara.
+3. Configura la comunicación TCP/IP:
+    - Asegúrate de que el HOST y PORT en ambos archivos (servidor_dummy.py y control_IA.py) sean los mismos y estén configurados correctamente para tu red.
+4. Ejecuta el servidor TCP/IP:
+    - Abre una terminal y navega al directorio del proyecto.
+    - Ejecuta el comando: python servidor_dummy.py
+5. Ejecuta el sistema de visión artificial:
+    - Abre otra terminal y navega al directorio del proyecto.
+    - Ejecuta el comando: python control_IA.py
+6. Observa la salida:
+    - En la terminal del servidor, verás las coordenadas recibidas cada vez que se detecte un objeto.
+    - En la ventana de video, verás el seguimiento del objeto detectado con sus coordenadas y dimensiones en centímetros.
+7. Para salir del sistema de visión, presiona la tecla 'q' en la ventana de video.
+NOTA: Para una mejor experiencia, se recomienda usar una cámara local o reducir la resolución de la transmisión para mejorar la velocidad de procesamiento, especialmente si se utiliza una cámara IP con latencia.
+"""
+
+
+"""
+pruebas que se han realizado hasta el momento de este dia en prmedio el proyecto lleva desarrollando 3 dias 
+script de prueba con droidcam como cámara local, se ha logrado detectar el objeto y enviar coordenadas al servidor dummy, aunque con cierta latencia debido a la transmisión de video por IP. Se recomienda usar una cámara local o reducir la resolución de la transmisión para mejorar la velocidad de procesamiento.
+FUNCION DE DETECCION DE OBJETOS: Se ha probado con objetos de color azul y rojo, logrando detectar ambos colores correctamente. Se ha implementado un sistema de filtrado por color en el espacio HSV para mejorar la precisión de la detección.
+FUNCION DE ENVIO DE COORDENADAS: Se ha verificado que las coordenadas
+servidor dummy recibe correctamente las coordenadas enviadas desde el sistema de visión artificial, mostrando las coordenadas en la terminal cada vez que se detecta un objeto.
+discursion de flujo directo (pc/controlador o rasberry) 
+
+
+ ajustar entre la integracion de la cmara web para hacer priebas en tiempo real para verificar corrborar el corercto funcionamiento y ajustar el seguimiento del tracking del objeto, asi como la conversion de pixeles a cm para mejorar la precisión de las coordenadas enviadas al cobot.
+otro punto importante es la optimizacion del codigo para reducir la latencia y mejorar la velocidad de procesamiento, especialmente si se utiliza una cámara IP con latencia. Se recomienda usar una cámara local o reducir la resolución de la transmisión para mejorar la velocidad de procesamiento.
+una vez teniendo la cmara se pueden realizar prueba en tiempo real reduciendo a latencia y ajustar parametros de rgb debido al ruido que existe de entorno ambientales y mejorar la deteccion del objeto, asi como ajustar el seguimiento del tracking para mantener el seguimiento del objeto de manera mas precisa.
+
+por ultimo una vez teniendo el sistema funcionando en tiempo real, se pueden realizar pruebas de integración con el cobot para verificar que las coordenadas enviadas sean correctas y que el cobot pueda reaccionar adecuadamente a las coordenadas recibidas, realizando movimientos precisos hacia el objeto detectado.
+
+
+"""
