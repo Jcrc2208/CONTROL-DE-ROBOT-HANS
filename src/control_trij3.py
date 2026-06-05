@@ -69,13 +69,18 @@ try:
                 omega_j3 = max(-7.0, min(7.0, (error_w * 0.08) + acoplamiento_j2))
 
             print(f"[TRACKING 3D] J1:{omega_j1:+.1f} | J2:{omega_j2:+.1f} | J3:{omega_j3:+.1f}", flush=True)
-            for name in dir(cps):
-             if "Pos" in name or "Joint" in name or "Act" in name:
-              print(name)
-            
 
         # Mando al robot
         cps.HRIF_SpeedJ(0, 0, [float(omega_j1), float(omega_j2), float(omega_j3), 0.0, 0.0, 0.0], 40.0, 0.04)
+
+        # Posición real del cobot (J1-J6 en grados)
+        result = []
+        ret_pos = cps.HRIF_ReadActPos(0, 0, result)
+        if ret_pos == 0 and len(result) >= 6:
+            joints = [round(float(result[i]), 1) for i in range(6)]
+            print(f"[COBOT REAL] {joints}", flush=True)
+        else:
+            print(f"[COBOT REAL] Error al leer posición: {ret_pos}", flush=True)
         
         elapsed = time.time() - start_time
         time.sleep(max(0.0, 0.04 - elapsed))
