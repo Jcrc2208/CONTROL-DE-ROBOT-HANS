@@ -69,6 +69,10 @@ try:
                 omega_j3 = max(-7.0, min(7.0, (error_w * 0.08) + acoplamiento_j2))
 
             print(f"[TRACKING 3D] J1:{omega_j1:+.1f} | J2:{omega_j2:+.1f} | J3:{omega_j3:+.1f}", flush=True)
+            for name in dir(cps):
+             if "Pos" in name or "Joint" in name or "Act" in name:
+              print(name)
+            
 
         # Mando al robot
         cps.HRIF_SpeedJ(0, 0, [float(omega_j1), float(omega_j2), float(omega_j3), 0.0, 0.0, 0.0], 40.0, 0.04)
