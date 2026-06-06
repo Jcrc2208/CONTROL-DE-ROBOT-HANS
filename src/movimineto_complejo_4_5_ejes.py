@@ -1,12 +1,19 @@
 import cv2
 import numpy as np
 import time
+import socket 
+import json
 from CPS import CPSClient
 
 # --- CONFIGURACIÓN ---
 IP = '192.168.10.11'
 PORT = 10003
 cps = CPSClient()
+
+# Configuración del emisor UDP para la interfaz
+UDP_IP = "127.0.0.1"
+UDP_PORT = 5005
+sock_udp = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # Inicialización
 if cps.HRIF_Connect(0, IP, PORT) != 0: raise RuntimeError("Error de conexión al robot")
@@ -80,6 +87,9 @@ try:
         if ret_pos == 0 and len(result) >= 6:
             joints = [round(float(result[i]), 1) for i in range(6)]
             print(f"[COBOT REAL] {joints}", flush=True)
+            
+            # --- MANDAR A LA INTERFAZ POR UDP ---
+            sock_udp.sendto(json.dumps(joints).encode('utf-8'), (UDP_IP, UDP_PORT))
         else:
             print(f"[COBOT REAL] Error al leer posición: {ret_pos}", flush=True)
         
