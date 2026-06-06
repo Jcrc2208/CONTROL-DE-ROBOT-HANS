@@ -25,6 +25,7 @@ cap = cv2.VideoCapture(0)
 
 try:
     while True:
+        start_time = time.time() # Control de tiempo para el ciclo del SDK
         ret, frame = cap.read() 
         if not ret: break
         
@@ -52,7 +53,6 @@ try:
                     cx, cy = x + w//2, y + h//2
                     err_x, err_y = cx - 160, cy - 120
         
-                    
                     if abs(err_x) < DEAD_ZONE: err_x = 0
                     if abs(err_y) < DEAD_ZONE: err_y = 0
                     
@@ -67,19 +67,32 @@ try:
                     max_v = np.max(np.abs(vel[:5])) 
                     if max_v > 5.0:
                         vel = [v * (5.0 / max_v) for v in vel]
-                    
-                    # Debug: Imprime las velocidades calculadas para cada eje
-                    print(f"Velocidades: J1={vel[0]:.2f} J2={vel[1]:.2f} J3={vel[2]:.2f} J4={vel[3]:.2f} J5={vel[4]:.2f}", flush=True)  
 
                     cv2.rectangle(frame, (x,y), (x+w,y+h), (0, 255, 0), 2)
                     cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
 
+        # Mando al robot
         cps.HRIF_SpeedJ(0, 0, vel, 40.0, 0.04)
         
+        # --- NUEVO: Posición real del cobot (J1-J6 en grados) ---
+        result = []
+        ret_pos = cps.HRIF_ReadActPos(0, 0, result)
+        if ret_pos == 0 and len(result) >= 6:
+            joints = [round(float(result[i]), 1) for i in range(6)]
+            print(f"[COBOT REAL] {joints}", flush=True)
+        else:
+            print(f"[COBOT REAL] Error al leer posición: {ret_pos}", flush=True)
+        
+        # Estabilización de frecuencia de muestreo
+        elapsed = time.time() - start_time
+        time.sleep(max(0.0, 0.04 - elapsed))
+
+        # Visuals e info
         info = f"J1:{vel[0]:.1f} J2:{vel[1]:.1f} J3:{vel[2]:.1f} J4:{vel[3]:.1f} J5:{vel[4]:.1f}"
         cv2.putText(frame, info, (10, 220), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 0), 1)
         cv2.imshow("Tracking", frame)
-        #valores para debug
+        
+        # Valores para debug de velocidades calculadas
         print(f"Velocidades -> J1:{vel[0]:.2f} deg/s | J2:{vel[1]:.2f} deg/s | J3:{vel[2]:.2f} deg/s | J4:{vel[3]:.2f} deg/s | J5:{vel[4]:.2f} deg/s", flush=True)
         
         if cv2.waitKey(1) & 0xFF == ord('q'): break
