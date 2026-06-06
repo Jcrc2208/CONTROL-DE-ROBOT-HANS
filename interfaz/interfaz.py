@@ -1,132 +1,92 @@
+import socket
+import threading
+import json
 import math
-import numpy as np
 import tkinter as tk
-import matplotlib.pyplot as plt
 
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+# --- PARÁMETROS TÉCNICOS ---
+LIMITS = [(-360, 360), (-135, 135), (-150, 150), (-360, 360), (-147, 147), (-360, 360)]
+LINKS = [50, 90, 80, 40, 30, 20] # Longitudes en píxeles para el dibujo en pantalla
 
-LIMITS = [
-    (-360, 360),   # J1
-    (-135, 135),   # J2
-    (-150, 150),   # J3
-    (-360, 360),   # J4
-    (-147, 147),   # J5
-    (-360, 360),   # J6
-]
-
-LINKS = [1.1, 1.0, 0.85, 0.55, 0.35, 0.25]
-
-class Robot:
-
+class ServidorRobot:
     def __init__(self, root):
-
-        self.joints = []
+        self.root = root
+        self.root.title("Hans Robot E05 - Monitor Mínimo")
+        self.angles = [0.0] * 6
         self.scales = []
 
-        controls = tk.Frame(root)
-        controls.pack(side="left", padx=10, pady=10)
-
-        self.fig, self.ax = plt.subplots()
-        self.canvas = FigureCanvasTkAgg(self.fig, root)
-        self.canvas.get_tk_widget().pack(
-            side="right",
-            fill="both",
-            expand=True
-        )
-
-        # CREAR CONTROLES J1-J6
+        # 1. PANEL IZQUIERDO: CONTROLES (Solo lectura)
+        self.panel_izq = tk.Frame(root, padx=15, pady=15)
+        self.panel_izq.pack(side="left", fill="y")
+        
+        tk.Label(self.panel_izq, text="TELEMETRÍA J1-J6", font=("Arial", 12, "bold")).pack(pady=5)
         for i, (mn, mx) in enumerate(LIMITS):
+            tk.Label(self.panel_izq, text=f"Articulación J{i+1}").pack(anchor="w")
+            sc = tk.Scale(self.panel_izq, from_=mx, to=mn, orient="horizontal", length=180, state="disabled")
+            sc.pack(pady=2)
+            self.scales.append(sc)
 
-            tk.Label(
-                controls,
-                text=f"J{i+1}",
-                font=("Arial", 12, "bold")
-            ).pack()
+        # 2. PANEL DERECHO: CANVAS DE DIBUJO (Estructura pura)
+        self.canvas = tk.Canvas(root, width=500, height=500, bg="white")
+        self.canvas.pack(side="right", fill="both", expand=True)
 
-            joint = tk.DoubleVar(value=0)
-            self.joints.append(joint)
+        self.dibujar_estructura()
 
-            scale = tk.Scale(
-                controls,
-                from_=mx,
-                to=mn,
-                orient="horizontal",
-                length=250,
-                resolution=1,
-                variable=joint,
-                command=lambda e, idx=i: self.limit_joint(idx)
-            )
+        # 3. RED: HILO RECEPTOR UDP
+        self.udp_running = True
+        threading.Thread(target=self.receptor_udp, daemon=True).start()
 
-            scale.pack(pady=5)
+    def dibujar_estructura(self):
+        """Calcula la cinemática directa básica y dibuja las líneas del brazo"""
+        self.canvas.delete("all")
+        
+        # Origen del dibujo (Centro inferior del Canvas)
+        x, y = 250, 400 
+        angulo_acumulado = 0.0
+        puntos = [(x, y)]
 
-            self.scales.append(scale)
+        # Calcular posiciones de cada articulación consecutiva
+        # Omitimos J1 para la vista lateral (J1 es rotación de base), graficamos el resto de la cadena angular
+        for angle, longitud in zip(self.angles, LINKS):
+            angulo_acumulado += math.radians(angle)
+            x += longitud * math.sin(angulo_acumulado)
+            y -= longitud * math.cos(angulo_acumulado) # Restamos porque en Canvas el eje Y baja
+            puntos.append((x, y))
 
-        self.draw()
+        # Dibujar las líneas que unen los puntos (Estructura del brazo)
+        for i in range(len(puntos) - 1):
+            color = "#d62728" if i >= 3 else "#1f77b4" # Color diferente para identificar la muñeca
+            self.canvas.create_line(puntos[i][0], puntos[i][1], puntos[i+1][0], puntos[i+1][1], width=6, fill=color)
+            self.canvas.create_oval(puntos[i][0]-5, puntos[i][1]-5, puntos[i][0]+5, puntos[i][1]+5, fill="black")
 
-    # BLOQUEAR LIMITES
-    def limit_joint(self, idx):
+    def actualizar_interfaz(self):
+        """Actualiza barras y redibuja los eslabones"""
+        for i, val in enumerate(self.angles):
+            self.scales[i].configure(state="normal")
+            self.scales[i].set(val)
+            self.scales[i].configure(state="disabled")
+        self.dibujar_estructura()
 
-        mn, mx = LIMITS[idx]
+    def receptor_udp(self):
+        """Escucha los datos enviados por el script del robot"""
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock.bind(("127.0.0.1", 5005))
+        sock.settimeout(1.0)
+        
+        while self.udp_running:
+            try:
+                data, _ = sock.recvfrom(1024)
+                self.angles = json.loads(data.decode('utf-8'))
+                self.root.after(0, self.actualizar_interfaz)
+            except socket.timeout:
+                continue
+        sock.close()
 
-        value = self.joints[idx].get()
-
-        # SI PASA DEL LIMITE SE REGRESA
-        if value < mn:
-            self.joints[idx].set(mn)
-
-        elif value > mx:
-            self.joints[idx].set(mx)
-
-        self.draw()
-
-    # CINEMATICA
-    def fk(self):
-
-        x = y = a = 0
-
-        points = [(0, 0)]
-
-        for j, l in zip(self.joints, LINKS):
-
-            a += math.radians(j.get())
-
-            x += l * math.cos(a)
-            y += l * math.sin(a)
-
-            points.append((x, y))
-
-        return np.array(points)
-
-    # DIBUJAR ROBOT
-    def draw(self):
-
-        p = self.fk()
-
-        self.ax.clear()
-
-        self.ax.plot(
-            p[:, 0],
-            p[:, 1],
-            "-o",
-            linewidth=3,
-            markersize=8
-        )
-
-        self.ax.set_xlim(-4, 4)
-        self.ax.set_ylim(-4, 4)
-
-        self.ax.set_aspect("equal")
-
-        # QUITAR EJES
-        self.ax.axis("off")
-
-        self.canvas.draw()
-
-
-root = tk.Tk()
-
-root.title("Robot 6DOF")
-
-Robot(root)
-
-root.mainloop()
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = ServidorRobot(root)
+    def salir():
+        app.udp_running = False
+        root.destroy()
+    root.protocol("WM_DELETE_WINDOW", salir)
+    root.mainloop()
