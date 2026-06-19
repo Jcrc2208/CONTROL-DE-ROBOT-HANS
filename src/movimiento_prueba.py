@@ -24,20 +24,20 @@ for k in range(1):  # 3 ciclos A->B->C->A
     # A
     print("-> Moviendo a A ...", flush=True)
     cps.HRIF_SetOverride(0, 0, 1)
-    cps.HRIF_WayPoint(0,0,0, punto_A, [45,0,45,0,45,0], "TCP", "Base", 20, 50, 0, 1, 0, 0, 0, "0")
+    cps.HRIF_WayPoint(0,0,0, punto_A, [-22.887,-8.977,106.002,-1.722,64.180,1.272], "TCP", "Base", 20, 50, 0, 1, 0, 0, 0, "0")
     cps.waitBlendingDone(0, 0)
     print("   Llegó a A", flush=True)
 
     # B
     print("-> Moviendo a B ...", flush=True)
     cps.HRIF_SetOverride(0, 0, 0)
-    cps.HRIF_WayPoint(0,0,1, punto_B, [45,0,45,0,45,0], "TCP", "Base", 100, 50, 0, 1, 0, 0, 0, "0")
+    cps.HRIF_WayPoint(0,0,1, punto_B, [-22.887,-8.977,106.002,-1.722,64.180,1.272], "TCP", "Base", 100, 50, 0, 1, 0, 0, 0, "0")
     cps.waitBlendingDone(0, 0)
     print("   Llegó a B", flush=True)
 
     # C
     print("-> Moviendo a C ...", flush=True)
-    cps.HRIF_WayPoint(0,0,0, punto_C, [45,0,45,0,45,0], "TCP", "Base", 100, 50, 0, 1, 0, 0, 0, "0")
+    cps.HRIF_WayPoint(0,0,0, punto_C, [-22.887,-8.977,106.002,-1.722,64.180,1.272], "TCP", "Base", 100, 50, 0, 1, 0, 0, 0, "0")
     cps.waitBlendingDone(0,0)
     print("   Llegó a C", flush=True)
 
