@@ -10,7 +10,8 @@ FASE 5: Documentación y presentación del proyecto.
 
 
 
-"""INSTRUCCIONES DE USO
+"""
+INSTRUCCIONES DE USO
 1. Ejecutar el servidor TCP/IP:
    - Abre una terminal y navega al directorio del proyecto.
    - Ejecuta el comando: python servidor_dummy.py
@@ -68,6 +69,9 @@ otro punto importante es la optimizacion del codigo para reducir la latencia y m
 una vez teniendo la cmara se pueden realizar prueba en tiempo real reduciendo a latencia y ajustar parametros de rgb debido al ruido que existe de entorno ambientales y mejorar la deteccion del objeto, asi como ajustar el seguimiento del tracking para mantener el seguimiento del objeto de manera mas precisa.
 
 por ultimo una vez teniendo el sistema funcionando en tiempo real, se pueden realizar pruebas de integración con el cobot para verificar que las coordenadas enviadas sean correctas y que el cobot pueda reaccionar adecuadamente a las coordenadas recibidas, realizando movimientos precisos hacia el objeto detectado.
+"""
 
-
+"""
+para poder hacer uso de el plugin de la cámara y establecer comunicacion con el robot se tiene que USAU EL ATRIBUTO #RET = 
+el atributo ret hace uso a la variable donde se almacena el plugin es decir para poder usar el plugin de la camara se tiene que usar el atributo ret para almacenar el plugin y luego usarlo para procesar la imagen y detectar el objeto, asi como para enviar las coordenadas al robot via TCP/IP.
 """
