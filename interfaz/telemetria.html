@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Cobot Huayan</title>
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <span>HUAYAN</span> CONTROL
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a href="telemetria.html" class="nav-item active">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Telemetría
+                    </a>
+                </li>
+                <li>
+                    <a href="analicomponentes.html" class="nav-item">
+                        <i class="fa-solid fa-brain"></i>
+                        Análisis Predictivo
+                    </a>
+                </li>
+                <li>
+                    <a href="controUsers.html" class="nav-item">
+                        <i class="fa-solid fa-users"></i>
+                        Usuarios
+                    </a>
+                </li>
+                <li>
+                    <a href="configrobot.html" class="nav-item">
+                        <i class="fa-solid fa-gear"></i>
+                        Configuración
+                    </a>
+                </li>
+                <li>
+                    <a href="index.html" class="logout-btn">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Cerrar Sesión
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="dashboard-content">
+
+        <div class="telemetry-grid">
+
+            <div class="robot-status-block">
+                <h3>Estado del Robot</h3>
+
+                <div id="status-connection">
+                    Conexión (HRIF_Connect)
+                    <span>Desconectado</span>
+                </div>
+
+                <div id="status-speed">
+                    Velocidad (HRIF_GetOverride)
+                    <span>0.00 %</span>
+                </div>
+
+                <div id="status-mode">
+                    Modo (HRIF_IsSimulateRobot)
+                    <span>Manual / Simulación</span>
+                </div>
+
+                <div id="status-temperature">
+                    Temperatura (HRIF_ReadRobotState)
+                    <span>0 °C</span>
+                </div>
+
+                <div id="status-emergency">
+                    Emergencia (enCPSState)
+                    <span>OK</span>
+                </div>
+            </div>
+
+            <div class="cartesian-block">
+                <h3>Posición Cartesiana (HRIF_GetActualTCPPos)</h3>
+
+                <div id="pos-x">
+                    X (mm)
+                    <span>0.00</span>
+                </div>
+
+                <div id="pos-y">
+                    Y (mm)
+                    <span>0.00</span>
+                </div>
+
+                <div id="pos-z">
+                    Z (mm)
+                    <span>0.00</span>
+                </div>
+
+                <div id="rot-rx">
+                    RX (°)
+                    <span>0.00</span>
+                </div>
+
+                <div id="rot-ry">
+                    RY (°)
+                    <span>0.00</span>
+                </div>
+
+                <div id="rot-rz">
+                    RZ (°)
+                    <span>0.00</span>
+                </div>
+            </div>
+
+            <div class="joints-block">
+                <h3>Ángulos Articulares (HRIF_GetActualJointPos)</h3>
+
+                <div id="joint-j1">
+                    J1 (Base)
+                    <span>0.0°</span>
+                </div>
+
+                <div id="joint-j2">
+                    J2 (Hombro)
+                    <span>0.0°</span>
+                </div>
+
+                <div id="joint-j3">
+                    J3 (Codo)
+                    <span>0.0°</span>
+                </div>
+
+                <div id="joint-j4">
+                    J4 (Muñeca 1)
+                    <span>0.0°</span>
+                </div>
+
+                <div id="joint-j5">
+                    J5 (Muñeca 2)
+                    <span>0.0°</span>
+                </div>
+
+                <div id="joint-j6">
+                    J6 (Muñeca 3)
+                    <span>0.0°</span>
+                </div>
+            </div>
+
+            <div id="cobot-visual-area">
+                <div class="visual-placeholder">
+                    <i class="fa-solid fa-robot"></i>
+                    <h3>Simulación del Cobot</h3>
+                    <p>
+                        Aquí se mostrará la visualización 3D,
+                        trayectorias y animaciones del robot
+                        en tiempo real vinculadas a las coordenadas articulares.
+                    </p>
+                </div>
+            </div>
+
+        </div> </main>
+
+</div> <script src="js/main.js"></script>
+</body>
+</html>

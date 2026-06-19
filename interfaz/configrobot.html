@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Cobot Huayan</title>
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo"><span>HUAYAN</span> CONTROL</div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="telemetria.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> Telemetría</a></li>
+                <li><a href="analicomponentes.html" class="nav-item"><i class="fa-solid fa-brain"></i> Análisis Predictivo</a></li>
+                <li><a href="controUsers.html" class="nav-item"><i class="fa-solid fa-users"></i> Usuarios</a></li>
+                <li><a href="configrobot.html" class="nav-item active"><i class="fa-solid fa-gear"></i> Configuración</a></li>
+                <li><a href="index.html" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="dashboard-content">
+        <div class="config-grid">
+
+            <div class="config-card">
+                <h3><i class="fa-solid fa-network-wired"></i> Conexión HRIF (Red)</h3>
+                <form class="config-form" id="form-network-config">
+                    <div class="config-group">
+                        <label for="config-box-id">Control Box ID (boxID)</label>
+                        <input type="number" id="config-box-id" value="0" min="0" max="4">
+                    </div>
+                    <div class="config-group">
+                        <label for="robot-ip">Dirección IP (hostName)</label>
+                        <input type="text" id="robot-ip" placeholder="192.168.1.100" value="127.0.0.1">
+                    </div>
+                    <div class="config-group">
+                        <label for="robot-port">Puerto TCP (nPort)</label>
+                        <input type="number" id="robot-port" value="10003">
+                    </div>
+                    <button type="submit" class="save-config-btn" id="btn-hrif-connect">HRIF_Connect()</button>
+                </form>
+            </div>
+
+            <div class="config-card">
+                <h3><i class="fa-solid fa-shield-halved"></i> Control General</h3>
+                <form class="config-form" id="form-safety-config">
+                    <div class="config-group">
+                        <label for="max-speed">Velocidad Global (HRIF_SetOverride: 0.01 a 1.00)</label>
+                        <input type="number" id="max-speed" min="0.01" max="1.00" step="0.01" value="0.50">
+                    </div>
+                    <div class="config-group">
+                        <label for="system-mode">Modo de Operación (HRIF_SetSimulation)</label>
+                        <select id="system-mode" class="config-select">
+                            <option value="1">1: Modo Simulación (Safe Mode)</option>
+                            <option value="0">0: Modo Real (Producción)</option>
+                        </select>
+                    </div>
+                    <div class="config-group">
+                        <label>Comandos Críticos</label>
+                        <div class="action-buttons-row">
+                            <button type="button" id="btn-soft-stop" class="action-btn danger-btn">Detener Robot</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="config-card">
+                <h3><i class="fa-solid fa-sliders"></i> Servidor de Telemetría</h3>
+                <form class="config-form" id="form-panel-config">
+                    <div class="config-group">
+                        <label for="refresh-rate">Frecuencia de muestreo (ms)</label>
+                        <input type="number" id="refresh-rate" min="10" max="2000" value="100">
+                    </div>
+                    <div class="config-group">
+                        <label for="config-rbt-id">ID del Brazo (rbtID)</label>
+                        <input type="number" id="config-rbt-id" value="0" min="0">
+                    </div>
+                    <button type="submit" class="save-config-btn secondary-btn">Aplicar Preferencias</button>
+                </form>
+            </div>
+
+        </div>
+    </main>
+
+</div>
+
+<script src="js/main.js"></script>
+</body>
+</html>

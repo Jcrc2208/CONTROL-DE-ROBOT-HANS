@@ -1,0 +1,89 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Cobot Huayan</title>
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo"><span>HUAYAN</span> CONTROL</div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="telemetria.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> Telemetría</a></li>
+                <li><a href="analicomponentes.html" class="nav-item"><i class="fa-solid fa-brain"></i> Análisis Predictivo</a></li>
+                <li><a href="controUsers.html" class="nav-item active"><i class="fa-solid fa-users"></i> Usuarios</a></li>
+                <li><a href="configrobot.html" class="nav-item"><i class="fa-solid fa-gear"></i> Configuración</a></li>
+                <li><a href="index.html" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="dashboard-content">
+        
+        <div class="users-header">
+            <div class="header-info">
+            </div>
+            <button class="add-user-btn" id="btn-add-user">
+                <i class="fa-solid fa-user-plus"></i> Nuevo Usuario
+            </button>
+        </div>
+
+        <div class="users-table-card">
+            
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>Nombre / ID</th>
+                        <th>Correo Electrónico</th>
+                        <th>Rol</th>
+                        <th>Última Conexión</th>
+                        <th class="text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="users-table-body">
+                    
+                    <tr class="user-row" id="user-1">
+                        <td>
+                            <strong class="user-name">Ing. Marco Ramos</strong>
+                            <span class="user-id">ID: #001</span>
+                        </td>
+                        <td class="user-email">marco.ramos@huayan.com</td>
+                        <td>
+                            <span class="role-tag admin">Administrador</span>
+                        </td>
+                        <td class="user-timestamp">18/06/2026 09:45</td>
+                        <td class="text-right">
+                            <button class="delete-user-btn" data-id="1">
+                                <i class="fa-solid fa-user-minus"></i> Dar de Baja
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr class="user-row" id="user-2">
+                        <td>
+                            <strong class="user-name">Carlos Mendoza</strong>
+                            <span class="user-id">ID: #002</span>
+                        </td>
+                        <td class="user-email">carlos.m@huayan.com</td>
+                        <td>
+                            <span class="role-tag operator">Operador</span>
+                        </td>
+                        <td class="user-timestamp">17/06/2026 18:22</td>
+                        <td class="text-right">
+                            <button class="delete-user-btn" data-id="2">
+                                <i class="fa-solid fa-user-minus"></i> Dar de Baja
+                            </button>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </main>
+
+</div>

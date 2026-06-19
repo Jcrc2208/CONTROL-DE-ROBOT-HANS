@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Cobot Huayan</title>
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo"><span>HUAYAN</span> CONTROL</div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="telemetria.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> Telemetría</a></li>
+                <li><a href="produccion.html" class="nav-item"><i class="fa-solid fa-industry"></i> Producción</a></li>
+                <li><a href="configrobot.html" class="nav-item active"><i class="fa-solid fa-gear"></i> Estado del Robot</a></li>
+                <li><a href="index.html" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="dashboard-content">
+
+        <div class="config-grid">
+
+            <div class="config-card">
+                <h3><i class="fa-solid fa-power-off"></i> Control de Servos y Energía</h3>
+                <div class="robot-status-actions">
+                    <p class="status-info-text">Habilitar o deshabilitar los motores eléctricos del brazo robótico.</p>
+                    <div class="action-buttons-row">
+                        <button type="button" id="btn-srv-on" class="action-btn success-btn">Servo ON (HRIF_SetServoState)</button>
+                        <button type="button" id="btn-srv-off" class="action-btn danger-btn">Servo OFF (HRIF_SetServoState)</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="config-card">
+                <h3><i class="fa-solid fa-heartbeat"></i> Estado Eléctrico y Lógico</h3>
+                <div class="status-details-list">
+                    <div class="status-detail-item">
+                        <span>Voltaje del Bus</span>
+                        <span id="hardware-voltage">0 V (HRIF_ReadRobotState)</span>
+                    </div>
+                    <div class="status-detail-item">
+                        <span>Modo Simulación</span>
+                        <span id="hardware-sim-state">Inactivo (HRIF_IsSimulateRobot)</span>
+                    </div>
+                    <div class="status-detail-item">
+                        <span>Código de Error Activo</span>
+                        <span id="hardware-error-code" class="text-ok">0 (HRIF_GetErrorCode)</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="config-card">
+                <h3><i class="fa-solid fa-triangle-exclamation"></i> Gestión de Fallas</h3>
+                <div class="robot-status-actions">
+                    <p class="status-info-text">Borrar las alarmas activas del controlador después de un paro de emergencia o colisión.</p>
+                    <button type="button" id="btn-clear-error" class="save-config-btn">Limpiar Alarmas (HRIF_ResetRobotError)</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</div> <script src="js/main.js"></script>
+</body>
+</html>

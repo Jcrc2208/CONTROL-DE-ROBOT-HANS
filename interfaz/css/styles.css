@@ -1,0 +1,315 @@
+/* 1. CONFIGURACIÓN GENERAL Y RESETEO (Estándar Industrial) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: #ffffff; 
+    color: #0f172a;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* 2. MENÚ DE NAVEGACIÓN (HEADER)*/
+.main-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 6%;
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px); 
+    border-bottom: 1px solid #f1f5f9;
+    z-index: 1000; 
+}
+
+.logo {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #1e293b;
+}
+
+.logo span {
+    color: #0052cc; 
+}
+
+.main-nav ul {
+    display: flex;
+    list-style: none;
+    gap: 35px;
+}
+
+.main-nav a {
+    text-decoration: none;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.95rem;
+    letter-spacing: 0.3px;
+    transition: color 0.3s ease;
+}
+
+.main-nav a:hover, 
+.main-nav a.active {
+    color: #0052cc;
+}
+
+/* 3. CONTENEDOR MAESTRO DEL SCROLLYTELLING (Estructura Split-Screen */
+
+
+.scrolly-container {
+    position: relative;
+    height: 400vh; 
+    margin-top: 70px;
+}
+
+.sticky-visual-viewer {
+    position: sticky;
+    top: 70px;
+    width: 100%;
+    height: calc(100vh - 70px);
+    display: flex; 
+    flex-direction: row;
+}
+
+/* 4. COLUMNA IZQUIERDA: Visor de Imágenes del Cobot (Apilamiento Perfecto) */
+.image-stack {
+    width: 50%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+}
+
+/* Configuración para que las imágenes salgan mucho más grandes y detalladas */
+.cobot-media {
+    position: absolute;
+    width: auto;
+    height: auto;
+    max-width: 95%;  
+    max-height: 85vh; 
+    object-fit: contain;
+    transition: opacity 0.15s ease-out; 
+    will-change: opacity; 
+}
+
+.step-2, .step-3, .step-4 {
+    opacity: 0;
+}
+
+/* 5. COLUMNA DERECHA: Paneles de Texto Fijos (Apilamiento Sincronizado) */
+.text-panels {
+    width: 50%;
+    height: 100%;
+    position: relative;
+}
+
+/* Cada tarjeta de texto se apila en el mismo lugar físico a la derecha */
+.panel-card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 12%; 
+    background-color: transparent;
+    transition: opacity 0.15s ease-out;
+    will-change: opacity;
+}
+
+/* Estado por defecto: Ocultamos de los textos 2 al 4. JS los irá activando */
+#step-text-2, 
+#step-text-3, 
+#step-text-4 {
+    opacity: 0;
+}
+
+/*Estilos Tipográficos de los Paneles*/
+.step-badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #0052cc;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+}
+
+.panel-card h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: #0f172a;
+    margin-bottom: 20px;
+}
+
+.panel-card p {
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.65;
+    color: #475569;
+}
+
+/* SISTEMA DE PESTAÑAS (Obliga al navegador a ocultar/mostrar secciones) */
+.tab-content {
+    display: none !important; 
+    width: 100%;
+    min-height: 100vh;
+    animation: fadeEffect 0.4s ease;
+}
+
+.tab-content.active {
+    display: block !important; 
+}
+
+@keyframes fadeEffect {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* LOGIN*/
+#login {
+    background: #ffffff;
+}
+
+.login-container {
+    width: 100%;
+    min-height: calc(100vh - 70px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 8%;
+}
+
+.login-layout {
+    width: 100%;
+    max-width: 1400px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 80px;
+}
+
+.login-info {
+    width: 50%;
+}
+
+.login-tag {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #0052cc;
+    letter-spacing: 2px;
+    margin-bottom: 25px;
+    display: inline-block;
+}
+
+.login-info h2 {
+    font-size: 3.2rem;
+    line-height: 1.15;
+    color: #0f172a;
+    margin-bottom: 25px;
+}
+
+.login-info p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #475569;
+    max-width: 600px;
+}
+
+.login-panel {
+    width: 420px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 24px;
+    padding: 45px;
+    box-shadow:
+        0 10px 40px rgba(15,23,42,0.04),
+        0 2px 10px rgba(15,23,42,0.03);
+}
+
+.login-panel h3 {
+    font-size: 1.8rem;
+    color: #0f172a;
+    margin-bottom: 10px;
+}
+
+.login-panel .subtitle {
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 35px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 10px;
+}
+
+.input-group input {
+    width: 100%;
+    height: 56px;
+    border: 1px solid #cbd5e1;
+    border-radius: 14px;
+    padding: 0 18px;
+    font-size: 1rem;
+    background: #ffffff;
+    color: #0f172a;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #0052cc;
+    box-shadow: 0 0 0 4px rgba(0,82,204,0.08);
+}
+
+.login-btn {
+    width: 100%;
+    height: 58px;
+    border: none;
+    border-radius: 14px;
+    background: #0052cc;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.login-btn:hover {
+    background: #003d99;
+    transform: translateY(-2px);
+}

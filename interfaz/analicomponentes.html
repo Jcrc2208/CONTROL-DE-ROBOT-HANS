@@ -1,0 +1,110 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Cobot Huayan</title>
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo"><span>HUAYAN</span> CONTROL</div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="telemetria.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> Telemetría</a></li>
+                <li><a href="analicomponentes.html" class="nav-item active"><i class="fa-solid fa-brain"></i> Análisis Predictivo</a></li>
+                <li><a href="controUsers.html" class="nav-item"><i class="fa-solid fa-users"></i> Usuarios</a></li>
+                <li><a href="configrobot.html" class="nav-item"><i class="fa-solid fa-gear"></i> Configuración</a></li>
+                <li><a href="index.html" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="dashboard-content">
+
+        <div class="predictive-grid">
+
+            <div class="joint-health-card" id="predictive-j1">
+                <h3>Articulación J1 (Base)</h3>
+                <div class="health-percentage">Vida Útil: <span>100</span>%</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 100%;"></div>
+                </div>
+                <div class="predictive-details">
+                    <p>Horas operativas: <span>0</span> hrs</p>
+                    <p>Próximo mantenimiento: <span>10,000 hrs</span></p>
+                    <p>Estado: <span class="status-tag ok">Óptimo</span></p>
+                </div>
+            </div>
+
+            <div class="joint-health-card" id="predictive-j2">
+                <h3>Articulación J2 (Hombro)</h3>
+                <div class="health-percentage">Vida Útil: <span>100</span>%</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 100%;"></div>
+                </div>
+                <div class="predictive-details">
+                    <p>Horas operativas: <span>0</span> hrs</p>
+                    <p>Próximo mantenimiento: <span>10,000 hrs</span></p>
+                    <p>Estado: <span class="status-tag ok">Óptimo</span></p>
+                </div>
+            </div>
+
+            <div class="joint-health-card" id="predictive-j3">
+                <h3>Articulación J3 (Codo)</h3>
+                <div class="health-percentage">Vida Útil: <span>100</span>%</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 100%;"></div>
+                </div>
+                <div class="predictive-details">
+                    <p>Horas operativas: <span>0</span> hrs</p>
+                    <p>Próximo mantenimiento: <span>10,000 hrs</span></p>
+                    <p>Estado: <span class="status-tag ok">Óptimo</span></p>
+                </div>
+            </div>
+
+            <div class="joint-health-card" id="predictive-j4">
+                <h3>Articulación J4 (Muñeca 1)</h3>
+                <div class="health-percentage">Vida Útil: <span>100</span>%</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 100%;"></div>
+                </div>
+                <div class="predictive-details">
+                    <p>Horas operativas: <span>0</span> hrs</p>
+                    <p>Próximo mantenimiento: <span>10,000 hrs</span></p>
+                    <p>Estado: <span class="status-tag ok">Óptimo</span></p>
+                </div>
+            </div>
+
+            <div class="joint-health-card" id="predictive-j5">
+                <h3>Articulación J5 (Muñeca 2)</h3>
+                <div class="health-percentage">Vida Útil: <span>100</span>%</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 100%;"></div>
+                </div>
+                <div class="predictive-details">
+                    <p>Horas operativas: <span>0</span> hrs</p>
+                    <p>Próximo mantenimiento: <span>10,000 hrs</span></p>
+                    <p>Estado: <span class="status-tag ok">Óptimo</span></p>
+                </div>
+            </div>
+
+            <div class="joint-health-card" id="predictive-j6">
+                <h3>Articulación J6 (Muñeca 3)</h3>
+                <div class="health-percentage">Vida Útil: <span>100</span>%</div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 100%;"></div>
+                </div>
+                <div class="predictive-details">
+                    <p>Horas operativas: <span>0</span> hrs</p>
+                    <p>Próximo mantenimiento: <span>10,000 hrs</span></p>
+                    <p>Estado: <span class="status-tag ok">Óptimo</span></p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+</div>
