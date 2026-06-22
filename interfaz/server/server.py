@@ -11,11 +11,6 @@ robot = RobotHuayanManager()
 # 1. Obtener Telemetría (Para el sondeo cíclico de la interfaz)
 @app.route('/api/robot/telemetria', methods=['GET'])
 def get_telemetria():
-    """
-    Ruta que el frontend consulta periódicamente. 
-    Devuelve el estado de conexión, estado actual de la app, 
-    posiciones cartesianas y ángulos articulares en tiempo real.
-    """
     paquete = robot.obtener_paquete_telemetria()
     return jsonify(paquete), 200
 

@@ -126,40 +126,6 @@
     border-bottom: 1px solid #eef2f7;
 }
 
-/* ESTADO DEL ROBOT */
-
-.robot-status-block {
-    grid-column: 1 / -1;
-
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 10px;
-    align-items: center;
-}
-
-.robot-status-block h3 {
-    grid-column: 1 / -1;
-    margin-bottom: 5px;
-}
-
-.robot-status-block div {
-    background: #f8fafc;
-    border-radius: 10px;
-    padding: 10px 12px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #475569;
-    border: 1px solid #eef2f7;
-}
-
-.robot-status-block div span {
-    display: block;
-    margin-top: 4px;
-    color: #0f172a;
-    font-size: 1rem;
-    font-weight: 700;
-}
-
 /* POSICIÓN Y ÁNGULOS (COMPACTOS) */
 
 .cartesian-block,

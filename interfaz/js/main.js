@@ -156,36 +156,28 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(res => res.json())
             .then(data => {
                 
-                // Si estamos en la página que despliega la telemetría, actualizamos los datos existentes
-                if (document.getElementById("status-connection")) {
-                    const connSpan = document.querySelector("#status-connection span");
-                    connSpan.innerText = data.conectado ? "Conectado" : "Desconectado";
-                    connSpan.style.color = data.conectado ? "#2ecc71" : "#e74c3c";
+                // 1. Actualizar Coordenadas Cartesianas reales del SDK (Si el bloque existe)
+                if (data.posicion_cartesiana && document.getElementById("pos-x")) {
+                    document.querySelector("#pos-x span").innerText = data.posicion_cartesiana[0].toFixed(2);
+                    document.querySelector("#pos-y span").innerText = data.posicion_cartesiana[1].toFixed(2);
+                    document.querySelector("#pos-z span").innerText = data.posicion_cartesiana[2].toFixed(2);
+                    document.querySelector("#rot-rx span").innerText = data.posicion_cartesiana[3].toFixed(2);
+                    document.querySelector("#rot-ry span").innerText = data.posicion_cartesiana[4].toFixed(2);
+                    document.querySelector("#rot-rz span").innerText = data.posicion_cartesiana[5].toFixed(2);
+                }
 
-                    // Actualizar Coordenadas Cartesianas reales del SDK
-                    if (data.posicion_cartesiana) {
-                        document.querySelector("#pos-x span").innerText = data.posicion_cartesiana[0].toFixed(2);
-                        document.querySelector("#pos-y span").innerText = data.posicion_cartesiana[1].toFixed(2);
-                        document.querySelector("#pos-z span").innerText = data.posicion_cartesiana[2].toFixed(2);
-                        document.querySelector("#rot-rx span").innerText = data.posicion_cartesiana[3].toFixed(2);
-                        document.querySelector("#rot-ry span").innerText = data.posicion_cartesiana[4].toFixed(2);
-                        document.querySelector("#rot-rz span").innerText = data.posicion_cartesiana[5].toFixed(2);
-                    }
-
-                    // Actualizar Grados de cada Eje (Articulares) reales del SDK
-                    if (data.angulos_articulares) {
-                        document.querySelector("#joint-j1 span").innerText = `${data.angulos_articulares[0].toFixed(1)}°`;
-                        document.querySelector("#joint-j2 span").innerText = `${data.angulos_articulares[1].toFixed(1)}°`;
-                        document.querySelector("#joint-j3 span").innerText = `${data.angulos_articulares[2].toFixed(1)}°`;
-                        document.querySelector("#joint-j4 span").innerText = `${data.angulos_articulares[3].toFixed(1)}°`;
-                        document.querySelector("#joint-j5 span").innerText = `${data.angulos_articulares[4].toFixed(1)}°`;
-                        document.querySelector("#joint-j6 span").innerText = `${data.angulos_articulares[5].toFixed(1)}°`;
-                    }
+                // 2. Actualizar Grados de cada Eje (Articulares) reales del SDK (Si el bloque existe)
+                if (data.angulos_articulares && document.getElementById("joint-j1")) {
+                    document.querySelector("#joint-j1 span").innerText = `${data.angulos_articulares[0].toFixed(1)}°`;
+                    document.querySelector("#joint-j2 span").innerText = `${data.angulos_articulares[1].toFixed(1)}°`;
+                    document.querySelector("#joint-j3 span").innerText = `${data.angulos_articulares[2].toFixed(1)}°`;
+                    document.querySelector("#joint-j4 span").innerText = `${data.angulos_articulares[3].toFixed(1)}°`;
+                    document.querySelector("#joint-j5 span").innerText = `${data.angulos_articulares[4].toFixed(1)}°`;
+                    document.querySelector("#joint-j6 span").innerText = `${data.angulos_articulares[5].toFixed(1)}°`;
                 }
             })
             .catch(err => console.log("Esperando comunicación con server.py..."));
     }
 
-    // Ejecución cíclica cada 100ms
     setInterval(obtenerTelemetriaCiclica, 100);
 });
