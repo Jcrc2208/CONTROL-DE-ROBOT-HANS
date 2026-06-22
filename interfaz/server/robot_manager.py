@@ -34,7 +34,6 @@ class RobotHuayanManager:
             if hasattr(self.sdk, 'HRIF_IsConnected'):
                 esta_conectado = self.sdk.HRIF_IsConnected(self.box_id)
                 
-                # Si el socket se cerró por alguna razón, intentamos reconectar en caliente
                 if not esta_conectado:
                     self.conectar_con_robot()
                     esta_conectado = self.sdk.HRIF_IsConnected(self.box_id)
@@ -45,7 +44,6 @@ class RobotHuayanManager:
             esta_conectado = False
             self.current_state = self.STATE_DISCONNECTED
 
-        # Si el robot sigue desconectado, devolvemos respuestas en 0 de inmediato
         if not esta_conectado:
             return {
                 "conectado": False,
@@ -66,11 +64,12 @@ class RobotHuayanManager:
         except Exception as e:
             print(f"No se pudo leer Posición TCP: {e}")
 
-        # 3. ÁNGULOS ARTICULARES (HRIF_ReadActJointPos)
+        # 3. ÁNGULOS ARTICULARES REALES (HRIF_ReadActJointPos) -> LEER GRADOS REALES
         try:
             buffer_joints = []
             if hasattr(self.sdk, 'HRIF_ReadActJointPos'):
                 self.sdk.HRIF_ReadActJointPos(self.box_id, self.rbt_id, buffer_joints)
+                # Guardamos los grados reales que vienen del robot (ej: 12.899)
                 articulares = [float(x) for x in buffer_joints] if buffer_joints else [0.0] * 6
         except Exception as e:
             print(f"No se pudo leer Ángulos Articulares: {e}")
@@ -79,5 +78,5 @@ class RobotHuayanManager:
             "conectado": True,
             "estado_app": self.current_state,
             "posicion_cartesiana": cartesianas,
-            "angulos_articulares": articulares
+            "angulos_articulares": articulares  # Enviamos los grados puros de los encoders
         }

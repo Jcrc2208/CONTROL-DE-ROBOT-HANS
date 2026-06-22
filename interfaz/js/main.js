@@ -168,12 +168,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // 2. Actualizar Grados de cada Eje (Articulares) reales del SDK (Si el bloque existe)
                 if (data.angulos_articulares && document.getElementById("joint-j1")) {
-                    document.querySelector("#joint-j1 span").innerText = `${data.angulos_articulares[0].toFixed(1)}°`;
-                    document.querySelector("#joint-j2 span").innerText = `${data.angulos_articulares[1].toFixed(1)}°`;
-                    document.querySelector("#joint-j3 span").innerText = `${data.angulos_articulares[2].toFixed(1)}°`;
-                    document.querySelector("#joint-j4 span").innerText = `${data.angulos_articulares[3].toFixed(1)}°`;
-                    document.querySelector("#joint-j5 span").innerText = `${data.angulos_articulares[4].toFixed(1)}°`;
-                    document.querySelector("#joint-j6 span").innerText = `${data.angulos_articulares[5].toFixed(1)}°`;
+                    document.querySelector("#joint-j1 span").innerText = `${data.angulos_articulares[0].toFixed(1)}`;
+                    document.querySelector("#joint-j2 span").innerText = `${data.angulos_articulares[1].toFixed(1)}`;
+                    document.querySelector("#joint-j3 span").innerText = `${data.angulos_articulares[2].toFixed(1)}`;
+                    document.querySelector("#joint-j4 span").innerText = `${data.angulos_articulares[3].toFixed(1)}`;
+                    document.querySelector("#joint-j5 span").innerText = `${data.angulos_articulares[4].toFixed(1)}`;
+                    document.querySelector("#joint-j6 span").innerText = `${data.angulos_articulares[5].toFixed(1)}`;
                 }
             })
             .catch(err => console.log("Esperando comunicación con server.py..."));
