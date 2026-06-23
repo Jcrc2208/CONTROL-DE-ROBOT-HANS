@@ -6876,7 +6876,7 @@ def WriteDint(value, reverse=False):
     y_bytes = struct.pack('!i', value)
     # y_hex = bytes.hex(y_bytes)
     y_hex = ''.join(['%02x' % i for i in y_bytes])
-    n, m = y_hex[:-4], y_hex[-4:]
+    n, m  = y_hex[:-4], y_hex[-4:]
     n, m = int(n, 16), int(m, 16)
     if reverse:
         v = [n, m]
