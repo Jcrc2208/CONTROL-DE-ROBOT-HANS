@@ -201,86 +201,110 @@
     font-size: 0.9rem;
     font-weight: 500;
 }
-/* 5. SECCIÓN DE ANÁLISIS PREDICTIVO (Salud de Componentes)*/
 
+/* 5. SECCIÓN DE ANÁLISIS PREDICTIVO (Salud de Componentes)*/
 .predictive-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
     margin-top: 20px;
 }
 
-.joint-health-card {
-    background-color: #ffffff;
+.error-panel {
+    background: #ffffff;
     border: 1px solid #e2e8f0;
-    border-radius: 16px;
+    border-left: 5px solid #22c55e; /* Verde éxito por defecto */
+    border-radius: 14px;
     padding: 20px;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.015);
+    margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: all 0.2s ease;
 }
 
-.joint-health-card h3 {
-    font-size: 1rem;
+.error-panel.danger-alert {
+    border-left-color: #ef4444; 
+    background-color: #fff5f5; /
+}
+
+.error-panel h3 {
+    font-size: 0.95rem;
     font-weight: 700;
     color: #0f172a;
-    margin-bottom: 12px;
+    margin: 0;
 }
 
-/* Formateo de los porcentajes de vida */
-.health-percentage {
-    font-size: 0.9rem;
+.error-panel p {
+    font-size: 0.85rem;
     font-weight: 600;
     color: #475569;
-    margin-bottom: 8px;
+    margin: 0;
 }
 
-.health-percentage span {
+.error-panel p span {
     font-family: 'Consolas', monospace;
-    font-size: 1.1rem;
-    color: #0052cc; /* Tu azul  resalta la salud */
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #15803d; 
+    background: #dcfce7; 
+    padding: 3px 10px;
+    border-radius: 6px;
+    margin-left: 6px;
 }
 
-.progress-bar-container {
-    width: 100%;
-    height: 8px;
-    background-color: #f1f5f9; 
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 16px;
+.error-panel.danger-alert p span {
+    color: #b91c1c; 
+    background: #fee2e2; 
 }
 
-.progress-bar {
-    height: 100%;
-    background-color: #22c55e; 
-    border-radius: 4px;
-    transition: width 0.4s ease, background-color 0.4s ease;
+.joint-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.predictive-details p {
+.joint-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.joint-card .metric {
     display: flex;
     justify-content: space-between;
-    font-size: 0.9rem;
+    align-items: center;
+    background: #f8fafc;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.82rem;
     font-weight: 600;
-    color: #64748b;
-    padding: 6px 0;
-    border-bottom: 1px dashed #f1f5f9;
+    color: #475569;
+    border: 1px solid #edf2f7;
 }
 
-.predictive-details p:last-child {
-    border-bottom: none;
-}
-
-.predictive-details span {
-    color: #0f172a;
+.joint-card .metric span {
+    font-family: 'Consolas', monospace;
+    font-size: 0.95rem;
     font-weight: 700;
+    color: #0f172a;
+    background: #ffffff;
+    padding: 3px 8px;
+    border-radius: 6px;
+    min-width: 80px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
 }
 
-.status-tag.ok {
-    color: #22c55e;
-    background-color: #f0fdf4;
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 0.8rem;
-}
 
 /* 6. SECCIÓN DE GESTIÓN DE USUARIOS (Estructura de Tablas) */
 

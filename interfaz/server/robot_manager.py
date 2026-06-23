@@ -17,13 +17,11 @@ class RobotHuayanManager:
         self.conectar_con_robot()
 
     def conectar_con_robot(self):
-        """Intenta abrir el socket de comunicación con el controlador del robot."""
         try:
             if hasattr(self.sdk, 'HRIF_Connect'):
                 print(f"Intentando conectar al Cobot en {self.ip}:{self.port}...")
-                # Se invoca la función de conexión del SDK de Hans/Huayan
                 self.sdk.HRIF_Connect(self.box_id, self.ip, self.port)
-                time.sleep(0.5) # Breve pausa para dejar que el socket se establezca
+                time.sleep(0.5) 
         except Exception as e:
             print(f"Error crítico al intentar invocar HRIF_Connect: {e}")
 
@@ -49,7 +47,10 @@ class RobotHuayanManager:
                 "conectado": False,
                 "estado_app": self.current_state,
                 "posicion_cartesiana": [0.0] * 6,
-                "angulos_articulares": [0.0] * 6
+                "angulos_articulares": [0.0] * 6,
+                "error_robot": "0",
+                "corriente_articulaciones": [0.0] * 6,
+                "temperatura_articulaciones": [0.0] * 6
             }
 
         cartesianas = [0.0] * 6
@@ -64,19 +65,48 @@ class RobotHuayanManager:
         except Exception as e:
             print(f"No se pudo leer Posición TCP: {e}")
 
-        # 3. ÁNGULOS ARTICULARES REALES (HRIF_ReadActJointPos) -> LEER GRADOS REALES
+        # 3. ÁNGULOS ARTICULARES REALES (HRIF_ReadActJointPos)
         try:
             buffer_joints = []
             if hasattr(self.sdk, 'HRIF_ReadActJointPos'):
                 self.sdk.HRIF_ReadActJointPos(self.box_id, self.rbt_id, buffer_joints)
-                # Guardamos los grados reales que vienen del robot (ej: 12.899)
                 articulares = [float(x) for x in buffer_joints] if buffer_joints else [0.0] * 6
         except Exception as e:
             print(f"No se pudo leer Ángulos Articulares: {e}")
+
+        # 4. CORRECCIÓN PARA EL ERROR DEL ROBOT (HRIF_ReadAxisErrorCode)
+        error_robot = "0"
+        try:
+            lista_error = []
+            if hasattr(self.sdk, 'HRIF_ReadAxisErrorCode'):
+                self.sdk.HRIF_ReadAxisErrorCode(self.box_id, self.rbt_id, lista_error)
+                error_robot = lista_error[0] if lista_error else "0"
+        except Exception as e:
+            print(f"No se pudo leer Error del Robot: {e}")
+
+        # 5. CORRECCIÓN PARA LAS CORRIENTES REALES (HRIF_ReadActJointCur_nJ)
+        corrientes = [0.0] * 6
+        try:
+            lista_corrientes = []
+            if hasattr(self.sdk, 'HRIF_ReadActJointCur_nJ'):
+                self.sdk.HRIF_ReadActJointCur_nJ(self.box_id, self.rbt_id, lista_corrientes)
+                corrientes = [float(i) for i in lista_corrientes] if lista_corrientes else [0.0] * 6
+        except Exception as e:
+            print(f"No se pudo leer Corrientes: {e}")
+
+        # 6. MANEJO DE TEMPERATURAS (Estimación basada en corriente)
+        temperaturas = []
+        for c in corrientes:
+            # Simulación de inercia térmica base (temperatura ambiente + delta por corriente)
+            temp_estimada = 35.0 + (abs(c) * 4.5) 
+            temperaturas.append(round(temp_estimada, 2))
 
         return {
             "conectado": True,
             "estado_app": self.current_state,
             "posicion_cartesiana": cartesianas,
-            "angulos_articulares": articulares  # Enviamos los grados puros de los encoders
+            "angulos_articulares": articulares,
+            "error_robot": error_robot, 
+            "corriente_articulaciones": corrientes, 
+            "temperatura_articulaciones": temperaturas
         }
