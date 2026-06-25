@@ -188,9 +188,9 @@
     justify-content: center;
     align-items: center;
 
-    background: radial-gradient(circle, #ffffff 0%, #f8fafc 100%);
+    background: transparent;
 
-    border: 2px dashed #cbd5e1;
+    border: none !important;
 
     color: #64748b;
 
@@ -307,7 +307,6 @@
 
 
 /* 6. SECCIÓN DE GESTIÓN DE USUARIOS (Estructura de Tablas) */
-
 .users-header {
     display: flex;
     justify-content: space-between;
