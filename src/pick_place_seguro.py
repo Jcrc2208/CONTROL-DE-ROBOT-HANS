@@ -6,6 +6,7 @@ IP = '192.168.10.11'
 PORT = 10003
 cps = CPSClient()
 
+
 # COORDENADAS DEFINIDAS
 PICK = [417.884, 227.981, 161.745, 177.171, 3.110, -154.484]
 PLACE = [400.792, -228.182, 159.280, 176.366, 0.552, 162.710]
@@ -33,6 +34,7 @@ def mover_y_esperar(coords):
     cps.waitBlendingDone(0, 0)
     print(f"Llegó a destino: {coords}")
 
+
 # --- SECUENCIA MAESTRA ---
 inicializar()
 
@@ -54,4 +56,5 @@ finally:
     print("Secuencia finalizada.")
 
 
+#definir taryectoria segura entre pick and place 
 #en este apartado se espera realizar una trayectoria destinada a hacer una tlaskacion seguro es decir que cuando tome un objeto se pueda ir hacia ariba esto para evitar posible colisiones 
