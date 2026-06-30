@@ -83,7 +83,6 @@ menuLinks.forEach(link => {
 });
 
 // CONTROL DE PESTAÑAS (TAB SYSTEM)
-
 const tabButtons = document.querySelectorAll(".tab-btn");
 const tabContents = document.querySelectorAll(".tab-content");
 
@@ -106,43 +105,61 @@ tabButtons.forEach(button => {
     });
 });
 
-// SISTEMA DE AUTENTICACIÓN Y ROLES DE USUARIO
+// =========================================================================
+// SISTEMA DE AUTENTICACIÓN DINÁMICO
+// =========================================================================
 const loginForm = document.querySelector(".login-form");
 
 if (loginForm) {
     loginForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const usuarioInput = loginForm.querySelector('input[type="text"]').value.trim();
+        e.preventDefault(); // Evita recarga instantánea del navegador
+        
+        const correoInput = loginForm.querySelector('input[type="email"]').value.trim();
         const contrasenaInput = loginForm.querySelector('input[type="password"]').value;
 
-        if (usuarioInput === "admin" && contrasenaInput === "admin123") {
-            localStorage.setItem("userRole", "admin"); 
-            window.location.href = "analicomponentes.html";
-        } 
-        else if (usuarioInput === "user" && contrasenaInput === "user123") {
-            localStorage.setItem("userRole", "user"); 
-            window.location.href = "produccion.html";
-        } else {
-            alert("Credenciales incorrectas");
-        }
+        fetch("http://localhost:5000/api/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                correo: correoInput,
+                password: contrasenaInput
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            // Busca esta sección exacta dentro del bloque .then(data => { ... }) de tu main.js:
+
+if (data.status === "success") {
+    localStorage.setItem("userRole", data.rol.toLowerCase()); 
+    localStorage.setItem("userName", data.nombre);
+
+    alert(`¡Bienvenido, ${data.nombre}!`);
+
+    // CORRECCIÓN DE RUTAS: Usamos './' para forzar la ruta relativa en subcarpetas de Live Server
+    if (data.rol.toLowerCase() === "admin") {
+        window.location.replace("./analicomponentes.html");
+    } else {
+        window.location.replace("./telemetria.html");
+    }
+}
+        })
+        .catch(err => {
+            console.error("Error en la conexión:", err);
+            alert("No se pudo conectar con el servidor HTTP de Flask.");
+        });
+
+        return false;
     });
 }
 
-// Validación instantánea de roles para ocultar elementos de administración
-const role = localStorage.getItem("userRole");
-if (role !== "admin") {
+// VALIDACIÓN DE PRIVILEGIOS AL CARGAR LA PÁGINA
+const currentRole = localStorage.getItem("userRole");
+if (currentRole && currentRole !== "admin") {
     document.querySelectorAll('[data-role="admin"]').forEach(boton => {
-        if (boton.parentElement) {
+        if (boton && boton.parentElement) {
             boton.parentElement.remove();
         }
     });
 }
-
-// Cierre de sesión
-const logoutBtn = document.querySelector(".logout-btn");
-if (logoutBtn) {
-    logoutBtn.addEventListener("click", () => {
-        localStorage.removeItem("userRole");
-    });
-}
-

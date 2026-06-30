@@ -24,15 +24,13 @@
     <main class="dashboard-content">
         
         <div class="users-header">
-            <div class="header-info">
-            </div>
+            <div class="header-info"></div>
             <button class="add-user-btn" id="btn-add-user">
                 <i class="fa-solid fa-user-plus"></i> Nuevo Usuario
             </button>
         </div>
 
         <div class="users-table-card">
-            
             <table class="users-table">
                 <thead>
                     <tr>
@@ -44,16 +42,13 @@
                     </tr>
                 </thead>
                 <tbody id="users-table-body">
-                    
                     <tr class="user-row" id="user-1">
                         <td>
-                            <strong class="user-name">Ing. Marco Ramos</strong>
+                            <strong class="user-name">Admin</strong>
                             <span class="user-id">ID: #001</span>
                         </td>
-                        <td class="user-email">marco.ramos@huayan.com</td>
-                        <td>
-                            <span class="role-tag admin">Administrador</span>
-                        </td>
+                        <td class="user-email">Admin@huayan.com</td>
+                        <td><span class="role-tag admin">Administrador</span></td>
                         <td class="user-timestamp">18/06/2026 09:45</td>
                         <td class="text-right">
                             <button class="delete-user-btn" data-id="1">
@@ -61,28 +56,55 @@
                             </button>
                         </td>
                     </tr>
-
                     <tr class="user-row" id="user-2">
                         <td>
-                            <strong class="user-name">Carlos Mendoza</strong>
+                            <strong class="user-name">User</strong>
                             <span class="user-id">ID: #002</span>
                         </td>
-                        <td class="user-email">carlos.m@huayan.com</td>
-                        <td>
-                            <span class="role-tag operator">Operador</span>
-                        </td>
+                        <td class="user-email">user@huayan.com</td>
+                        <td><span class="role-tag operator">Operador</span></td>
                         <td class="user-timestamp">17/06/2026 18:22</td>
                         <td class="text-right">
                             <button class="delete-user-btn" data-id="2">
                                 <i class="fa-solid fa-user-minus"></i> Dar de Baja
                             </button>
                         </td>
-                    </tr>
-
+                    </tr>    
                 </tbody>
             </table>
-
         </div>
     </main>
-
 </div>
+
+<div id="user-modal" class="modal" style="display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); justify-content:center; align-items:center; z-index:9999;">
+    <div class="modal-content" style="background:white; padding:25px; border-radius:8px; width:350px;">
+        <h3>Registrar Nuevo Usuario</h3>
+        <form id="add-user-form">
+            <div style="margin-bottom: 12px;">
+                <label style="display:block; font-weight:bold;">Nombre Completo:</label>
+                <input type="text" id="modal-nombre" required style="width:100%; padding:6px;">
+            </div>
+            <div style="margin-bottom: 12px;">
+                <label style="display:block; font-weight:bold;">Correo Electrónico:</label>
+                <input type="email" id="modal-correo" required style="width:100%; padding:6px;">
+            </div>
+            <div style="margin-bottom: 12px;">
+                <label style="display:block; font-weight:bold;">Contraseña:</label>
+                <input type="password" id="modal-password" required style="width:100%; padding:6px;">
+            </div>
+            <div style="margin-bottom: 12px;">
+                <label style="display:block; font-weight:bold;">Rol:</label>
+                <select id="modal-rol" style="width:100%; padding:6px;">
+                    <option value="User">User</option>
+                    <option value="Admin">Admin</option>
+                </select>
+            </div>
+            <div style="text-align:right; margin-top:15px;">
+                <button type="button" id="btn-close-modal" style="margin-right:8px; padding:6px 12px;">Cancelar</button>
+                <button type="submit" style="padding:6px 12px; background:#007bff; color:white; border:none; border-radius:4px;">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="js/usuarios.js"></script>

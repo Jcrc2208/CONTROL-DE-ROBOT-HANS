@@ -74,13 +74,13 @@ class RobotHuayanManager:
         except Exception as e:
             print(f"No se pudo leer Ángulos Articulares: {e}")
 
-        # 4. CORRECCIÓN PARA EL ERROR DEL ROBOT (HRIF_ReadAxisErrorCode)
+        # 4. CORRECCIÓN PARA EL ERROR GENERAL DEL ROBOT
         error_robot = "0"
         try:
-            lista_error = []
-            if hasattr(self.sdk, 'HRIF_ReadAxisErrorCode'):
-                self.sdk.HRIF_ReadAxisErrorCode(self.box_id, self.rbt_id, lista_error)
-                error_robot = lista_error[0] if lista_error else "0"
+            if hasattr(self.sdk, 'HRIF_ReadRobotErrorCode'):
+                # Esta función solo pide box_id y rbt_id, y retorna el entero
+                resultado = self.sdk.HRIF_ReadRobotErrorCode(self.box_id, self.rbt_id)
+                error_robot = str(resultado)
         except Exception as e:
             print(f"No se pudo leer Error del Robot: {e}")
 
