@@ -1,0 +1,716 @@
+/* 1. ESTRUCTURA GENERAL DEL DASHBOARD INDUSTRIAL*/
+.dashboard-container {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #f8fafc; 
+}
+
+/* 2. BARRA LATERAL DE NAVEGACIÓN PROTEGIDA (SIDEBAR) */
+.sidebar {
+    width: 280px;
+    height: 100%;
+    background-color: #ffffff;
+    border-right: 1px solid #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 20px;
+    z-index: 100;
+}
+
+.sidebar .logo {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: #1e293b;
+    margin-bottom: 40px;
+    padding-left: 10px;
+}
+
+.sidebar .logo span {
+    color: #0052cc; 
+}
+
+.sidebar-nav {
+    flex-grow: 1;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sidebar-nav .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    color: #64748b;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    transition: all 0.25s ease;
+}
+
+/* Estado activo y hover alineado a tu diseño original */
+.sidebar-nav .nav-item:hover,
+.sidebar-nav .nav-item.active {
+    color: #0052cc;
+    background-color: rgba(0, 82, 204, 0.05); 
+}
+
+/* Botón de cerrar sesión al fondo */
+.logout-btn {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    color: #ef4444;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 12px;
+    transition: background 0.2s ease;
+}
+
+.logout-btn:hover {
+    background-color: #fef2f2;
+}
+
+/* 3. CONTENEDOR PRINCIPAL DE CONTENIDO */
+   
+.dashboard-content {
+    flex-grow: 1;
+    height: 100%;
+    overflow-y: auto;
+    padding: 40px;
+}
+
+.dashboard-content h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 25px;
+}
+/* TELEMETRÍA COMPACTA Y MODERNA*/
+
+.telemetry-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+/* Tarjetas generales */
+.robot-status-block,
+.cartesian-block,
+.joints-block,
+#cobot-visual-area {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+}
+
+/* Títulos */
+.telemetry-grid h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+/* POSICIÓN Y ÁNGULOS (COMPACTOS) */
+
+.cartesian-block,
+.joints-block {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cartesian-block div,
+.joints-block div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    background: #f8fafc;
+
+    padding: 8px 12px; 
+
+    border-radius: 8px;
+
+    font-size: 0.82rem; 
+
+    font-weight: 600;
+
+    color: #475569;
+
+    border: 1px solid #edf2f7;
+}
+
+.cartesian-block div span,
+.joints-block div span {
+    font-family: 'Consolas', monospace;
+
+    font-size: 0.95rem;
+
+    font-weight: 700;
+
+    color: #0f172a;
+
+    background: #ffffff;
+
+    padding: 3px 8px;
+
+    border-radius: 6px;
+
+    min-width: 70px;
+
+    text-align: center;
+}
+
+/* ÁREA VISUAL */
+
+#cobot-visual-area {
+    grid-column: 1 / -1;
+
+    min-height: 260px; 
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: transparent;
+
+    border: none !important;
+
+    color: #64748b;
+
+    text-align: center;
+}
+
+#cobot-visual-area p {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* 5. SECCIÓN DE ANÁLISIS PREDICTIVO (Salud de Componentes)*/
+.predictive-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.error-panel {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-left: 5px solid #22c55e; /* Verde éxito por defecto */
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+/* --- ESTADO DE ALERTA/ERROR ACTIVO --- */
+.error-panel.danger-alert {
+    background-color: #fffafb; /* Fondo rojizo muy suave */
+    border-color: #fca5a5;     /* Borde suavizado en tonos rojos */
+    border-left-color: #ef4444; /* Rojo peligro */
+    /* Animación sutil de pulso en el borde para alertar al operador */
+    animation: border-pulse 2s infinite ease-in-out;
+}
+
+.error-panel h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Separa el icono de FontAwesome del texto */
+    transition: color 0.3s ease;
+}
+
+/* Cambia también el color del título e icono si hay error */
+.error-panel.danger-alert h3 {
+    color: #991b1b; 
+}
+
+.error-panel p {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+    margin: 0;
+}
+
+/* --- BADGES PARA EL CÓDIGO (SPAN) --- */
+.error-panel p span {
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #166534; 
+    background: #dcfce7; 
+    padding: 3px 10px;
+    border-radius: 6px;
+    margin-left: 6px;
+    display: inline-block;
+    border: 1px solid #bbf7d0;
+    transition: all 0.3s ease;
+}
+
+.error-panel.danger-alert p span {
+    color: #991b1b; 
+    background: #fee2e2; 
+    border-color: #fca5a5;
+}
+
+/* --- ANIMACIÓN DE ADVERTENCIA --- */
+@keyframes border-pulse {
+    0% {
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.05);
+    }
+    50% {
+        box-shadow: 0 4px 16px rgba(239, 68, 68, 0.15);
+        border-left-color: #b91c1c; /* El rojo del borde se intensifica */
+    }
+    100% {
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.05);
+    }
+}
+
+.joint-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(15, 23, 42, 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.joint-card h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.joint-card .metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #475569;
+    border: 1px solid #edf2f7;
+}
+
+.joint-card .metric span {
+    font-family: 'Consolas', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    background: #ffffff;
+    padding: 3px 8px;
+    border-radius: 6px;
+    min-width: 80px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+}
+
+
+/* 6. SECCIÓN DE GESTIÓN DE USUARIOS (Estructura de Tablas) */
+.users-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.users-header .subtitle {
+    color: #64748b;
+    margin-top: 5px;
+}
+
+/* Botón para añadir usuarios */
+.add-user-btn {
+    background-color: #0052cc;
+    color: #ffffff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.add-user-btn:hover {
+    background-color: #003d99;
+}
+
+/* Tarjeta contenedora de la tabla */
+.users-table-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.015);
+}
+
+/* Estructura base de la Tabla */
+.users-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.users-table th {
+    padding: 12px 16px;
+    border-bottom: 2px solid #f1f5f9;
+    color: #475569;
+    font-size: 0.9rem;
+}
+
+.users-table td {
+    padding: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.95rem;
+    color: #0f172a;
+}
+
+/* Detalles internos de las celdas */
+.user-name {
+    display: block;
+}
+
+.user-id {
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.user-email {
+    color: #475569;
+}
+
+.user-timestamp {
+    color: #64748b;
+    font-family: 'Consolas', monospace;
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* Etiquetas de Roles */
+.role-tag {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.role-tag.admin {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+
+.role-tag.operator {
+    background-color: #f8fafc;
+    color: #475569;
+}
+
+/* Botón de eliminación */
+.delete-user-btn {
+    background-color: #ef4444;
+    color: #ffffff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background-color 0.2s ease;
+}
+
+.delete-user-btn:hover {
+    background-color: #b91c1c;
+}
+/* 7. SECCIÓN DE CONFIGURACIÓN (Ajustes Técnicos del SDK) */
+.config-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.config-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.015);
+}
+
+.config-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.config-card h3 i {
+    color: #0052cc; 
+
+.config-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.config-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.config-group label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.config-group input, 
+.config-select {
+    width: 100%;
+    height: 44px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 0 14px;
+    font-size: 0.95rem;
+    color: #0f172a;
+    background-color: #ffffff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.config-group input:focus, 
+.config-select:focus {
+    outline: none;
+    border-color: #0052cc;
+    box-shadow: 0 0 0 3px rgba(0, 82, 204, 0.08);
+}
+
+/* Botones principales de ejecución (HRIF_Connect, etc.) */
+.save-config-btn {
+    height: 44px;
+    border: none;
+    border-radius: 10px;
+    background-color: #0052cc;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 5px;
+}
+
+.save-config-btn:hover {
+    background-color: #003d99;
+}
+
+.save-config-btn.secondary-btn {
+    background-color: #f8fafc;
+    color: #475569;
+    border: 1px solid #e2e8f0;
+}
+
+.save-config-btn.secondary-btn:hover {
+    background-color: #f1f5f9;
+}
+
+.action-buttons-row {
+    display: flex;
+    gap: 10px;
+}
+
+.action-btn {
+    flex: 1;
+    height: 44px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.danger-btn {
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: 1px solid #fca5a5;
+}
+
+.danger-btn:hover {
+    background-color: #fecaa6;
+    background-color: #fca5a5;
+}
+
+.action-btn:active {
+    transform: scale(0.98);
+}
+
+/* 9. SECCIÓN DE PRODUCCIÓN (Métricas de Conteo y Detección) */
+
+.production-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+}
+
+.kpi-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 4px 10px rgba(15, 23, 42, 0.01);
+}
+
+.total-counter { border-left: 5px solid #0052cc; } /* Azul Huayan */
+.valid-counter { border-left: 5px solid #22c55e; } /* Verde éxito */
+.speed-counter { border-left: 5px solid #64748b; } /* Gris neutro */
+
+.kpi-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.kpi-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #0f172a;
+    font-family: 'Consolas', monospace;
+}
+
+.kpi-value small {
+    font-size: 1rem;
+    color: #64748b;
+    font-weight: 400;
+}
+
+.production-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.production-card.large-card {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.01);
+}
+
+.production-card h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.production-card h3 i {
+    color: #0052cc;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.production-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+
+.production-table th {
+    background-color: #f8fafc;
+    color: #64748b;
+    padding: 14px 12px;
+    font-weight: 600;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+
+.production-table td {
+    padding: 16px 12px;
+    border-bottom: 1px solid #edf2f7;
+    color: #334155;
+}
+
+
+.production-table tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+.row-alert {
+    background-color: #fff5f5;
+}
+
+.row-alert:hover {
+    background-color: #ffebeb !important;
+}
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    display: inline-block;
+}
+
+.badge-success {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.badge-danger {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+}

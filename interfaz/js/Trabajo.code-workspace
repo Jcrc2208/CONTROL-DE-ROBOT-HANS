@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"name": "Trabajo",
+			"path": "../../.."
+		},
+		{
+			"name": "epoch50",
+			"path": "../../../../epoch50"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Trabajo"
+	}
+}

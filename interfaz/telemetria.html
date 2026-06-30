@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Cobot Huayan</title>
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo">
+            <span>HUAYAN</span> CONTROL
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul>
+                <li>
+                    <a href="telemetria.html" class="nav-item active">
+                        <i class="fa-solid fa-chart-line"></i>
+                        Telemetría
+                    </a>
+                </li>
+                <li>
+                    <a href="analicomponentes.html" class="nav-item">
+                        <i class="fa-solid fa-brain"></i>
+                        Análisis Predictivo
+                    </a>
+                </li>
+                <li>
+                    <a href="controUsers.html" class="nav-item">
+                        <i class="fa-solid fa-users"></i>
+                        Usuarios
+                    </a>
+                </li>
+                <li>
+                    <a href="index.html" class="logout-btn">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        Cerrar Sesión
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="dashboard-content">
+
+        <div class="telemetry-grid">
+
+            <div class="cartesian-block">
+                <h3>Posición Cartesiana</h3>
+
+                <div id="pos-x">
+                    X (mm)
+                    <span>0.00</span>
+                </div>
+
+                <div id="pos-y">
+                    Y (mm)
+                    <span>0.00</span>
+                </div>
+
+                <div id="pos-z">
+                    Z (mm)
+                    <span>0.00</span>
+                </div>
+
+                <div id="rot-rx">
+                    RX (°)
+                    <span>0.00</span>
+                </div>
+
+                <div id="rot-ry">
+                    RY (°)
+                    <span>0.00</span>
+                </div>
+
+                <div id="rot-rz">
+                    RZ (°)
+                    <span>0.00</span>
+                </div>
+            </div>
+
+            <div class="joints-block">
+                <h3>Ángulos Articulares </h3>
+
+                <div id="joint-j1">
+                    J1 
+                    <span>0.0°</span>
+                </div>
+
+                <div id="joint-j2">
+                    J2 
+                    <span>0.0°</span>
+                </div>
+
+                <div id="joint-j3">
+                    J3 
+                    <span>0.0°</span>
+                </div>
+
+                <div id="joint-j4">
+                    J4 
+                    <span>0.0°</span>
+                </div>
+
+                <div id="joint-j5">
+                    J5
+                    <span>0.0°</span>
+                </div>
+
+                <div id="joint-j6">
+                    J6 
+                    <span>0.0°</span>
+                </div>
+            </div>
+
+            <!--- lo de las lineas punteadas --->  
+            <div id="cobot-visual-area" style="position: relative; width: 100%; min-height: 400px; border: none !important; background: transparent !important; box-shadow: none !important;">
+    </div>
+
+        </div> 
+    </main>
+
+</div> 
+
+<script src="js/main.js"></script>
+<script src="js/telemetria.js"></script>
+
+
+</body>
+</html>

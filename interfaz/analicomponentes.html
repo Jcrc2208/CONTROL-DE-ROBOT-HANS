@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control - Cobot Huayan</title>
+    
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <aside class="sidebar">
+        <div class="logo"><span>HUAYAN</span> CONTROL</div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li><a href="telemetria.html" class="nav-item"><i class="fa-solid fa-chart-line"></i> Telemetría</a></li>
+                <li><a href="analicomponentes.html" class="nav-item active"><i class="fa-solid fa-brain"></i> Análisis Predictivo</a></li>
+                <li><a href="controUsers.html" class="nav-item"><i class="fa-solid fa-users"></i> Usuarios</a></li>
+                <li><a href="index.html" class="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</a></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main class="dashboard-content">
+
+        <div class="error-panel" id="error-panel">
+            <h3><i class="fa-solid fa-triangle-exclamation"></i> Estado del Sistema</h3>
+            <p>Código de Error Activo: <span id="robot-error">0</span></p>
+        </div>
+
+        <div class="predictive-grid">
+
+            <div class="joint-card" id="joint-j1">
+                <h3>Articulación J1</h3>
+                <div class="metric">
+                    <p>Corriente: <span id="current-j1">0.0</span> A</p>
+                </div>
+                <div class="metric">
+                    <p>Temperatura : <span id="temp-j1">0.0</span> °C</p>
+                </div>
+            </div>
+
+            <div class="joint-card" id="joint-j2">
+                <h3>Articulación J2</h3>
+                <div class="metric">
+                    <p>Corriente: <span id="current-j2">0.0</span> A</p>
+                </div>
+                <div class="metric">
+                    <p>Temperatura: <span id="temp-j2">0.0</span> °C</p>
+                </div>
+            </div>
+
+            <div class="joint-card" id="joint-j3">
+                <h3>Articulación J3</h3>
+                <div class="metric">
+                    <p>Corriente: <span id="current-j3">0.0</span> A</p>
+                </div>
+                <div class="metric">
+                    <p>Temperatura: <span id="temp-j3">0.0</span> °C</p>
+                </div>
+            </div>
+
+            <div class="joint-card" id="joint-j4">
+                <h3>Articulación J4</h3>
+                <div class="metric">
+                    <p>Corriente: <span id="current-j4">0.0</span> A</p>
+                </div>
+                <div class="metric">
+                    <p>Temperatura: <span id="temp-j4">0.0</span> °C</p>
+                </div>
+            </div>
+
+            <div class="joint-card" id="joint-j5">
+                <h3>Articulación J5</h3>
+                <div class="metric">
+                    <p>Corriente: <span id="current-j5">0.0</span> A</p>
+                </div>
+                <div class="metric">
+                    <p>Temperatura: <span id="temp-j5">0.0</span> °C</p>
+                </div>
+            </div>
+
+            <div class="joint-card" id="joint-j6">
+                <h3>Articulación J6</h3>
+                <div class="metric">
+                    <p>Corriente: <span id="current-j6">0.0</span> A</p>
+                </div>
+                <div class="metric">
+                    <p>Temperatura: <span id="temp-j6">0.0</span> °C</p>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script src="js/analisis.js"></script>
+
+</body>
+</html>
