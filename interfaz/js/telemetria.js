@@ -1,6 +1,4 @@
-// =========================================================================
 // TELEMETRÍA - CONTROL DE POSICIONES Y ÁNGULOS ARTICULARES (CORREGIDO)
-// =========================================================================
 document.addEventListener("DOMContentLoaded", () => {
     const URL_BASE = "http://localhost:5000/api/robot";
 
@@ -34,15 +32,17 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // El resto de tu código de Three.js (scene, camera, meshes, window.actualizarGemeloDigital...) se queda EXACTAMENTE IGUAL.
-
-// Telemetria modelo 3D - REDISEÑO PARA COBOT HANS E05
+// Telemetria modelo 3D - REDISEÑO PARA COBOT HANS E05 CON GRIPPER METÁLICO
 const contenedor = document.getElementById('cobot-visual-area');
 
 const scene = new THREE.Scene();
 
-const camera = new THREE.PerspectiveCamera(40, contenedor.clientWidth / contenedor.clientHeight, 0.1, 1000);
-// Ajustamos la cámara ligeramente de lado para apreciar el desfase tridimensional del E05
-camera.position.set(1.4, 1.0, 1.4);
+// Ajustamos el FOV ligeramente para acomodar la longitud extra del gripper
+const camera = new THREE.PerspectiveCamera(45, contenedor.clientWidth / contenedor.clientHeight, 0.1, 1000);
+// Posición lateral para apreciar el desfase tridimensional del E05 y el nuevo gripper
+camera.position.set(1.6, 1.2, 1.6);
+// Apuntar ligeramente más arriba para centrar el robot con la herramienta
+camera.lookAt(0, 0.3, 0);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 renderer.setSize(contenedor.clientWidth, contenedor.clientHeight);
@@ -50,6 +50,8 @@ contenedor.appendChild(renderer.domElement);
 
 const controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
+// Centrar el objetivo de la cámara un poco más arriba
+controls.target.set(0, 0.2, 0);
 
 // Luces
 const light = new THREE.DirectionalLight(0xffffff, 1.3);
@@ -70,6 +72,15 @@ scene.add(axesHelper);
 // Materiales de Grado Industrial (Estructura blanca/gris claro y juntas oscuras)
 const matRobot = new THREE.MeshStandardMaterial({ color: 0xf5f5f7, roughness: 0.25, metalness: 0.05 }); 
 const matArticulacion = new THREE.MeshStandardMaterial({ color: 0x1d2026, metalness: 0.6, roughness: 0.3 });
+
+// --- ACTUALIZACIÓN: Material específico para las mordazas del gripper con acabado metálico ---
+const matGripperFinger = new THREE.MeshStandardMaterial({ 
+    color: 0xaaaaaa, // Color base gris claro para metal
+    metalness: 1.0,  // Totalmente metálico
+    roughness: 0.1,  // Muy pulido/brillante
+    envMapIntensity: 1.0 // Intensidad de reflexión (si añades un mapa de entorno luego)
+});
+// --------------------------------------------------------------------------------------------
 
 // =========================================================================
 // CONSTRUCCIÓN CON OFFSETS CINEMÁTICOS (Mapeo real Hans E05)
@@ -116,6 +127,7 @@ function agregarVolumenE05(padre, geo, mat, x = 0, y = 0, z = 0, rotX = 0, rotZ 
     mesh.rotation.x = rotX;
     mesh.rotation.z = rotZ;
     padre.add(mesh);
+    return mesh; // Devolvemos el mesh por si necesitamos manipularlo individualmente
 }
 
 // =========================================================================
@@ -139,39 +151,80 @@ agregarVolumenE05(J4, new THREE.CylinderGeometry(0.035, 0.035, 0.07, 24), matArt
 // Eje 5: Segunda Muñeca (Cilindro transversal corto de cabeceo)
 agregarVolumenE05(J5, new THREE.CylinderGeometry(0.032, 0.032, 0.06, 24), matArticulacion, 0, 0, 0, Math.PI / 2);
 
-// Eje 6: Brida final (Plato rotatorio plano de ensamble para la pinza)
-agregarVolumenE05(J6, new THREE.CylinderGeometry(0.034, 0.034, 0.02, 24), matRobot, 0, 0, 0, Math.PI / 2); 
+// =========================================================================
+// EJE 6 Y AGREGADO DEL GRIPPER (Pinza Paralela Metálica)
+// =========================================================================
+
+// Eje 6: Brida final (Plato rotatorio plano de ensamble)
+const bridaFinal = agregarVolumenE05(J6, new THREE.CylinderGeometry(0.034, 0.034, 0.02, 24), matRobot, 0, 0, 0, Math.PI / 2); 
+
+// --- DISEÑO DEL GRIPPER (Acoplado a J6 para que rote con él) ---
+
+// Base del Gripper (Cuerpo principal)
+const gripperBaseGeo = new THREE.BoxGeometry(0.06, 0.04, 0.06); 
+// Usamos el material metálico también para el cuerpo principal del gripper para consistencia
+const gripperBase = new THREE.Mesh(gripperBaseGeo, matGripperFinger); 
+gripperBase.position.set(0, 0, 0.04); // Desfase en Z para salir de la brida
+J6.add(gripperBase);
+
+// Guías de deslizamiento (Detalle estético)
+const guiaGeo = new THREE.CylinderGeometry(0.005, 0.005, 0.06, 16);
+const guiaL = new THREE.Mesh(guiaGeo, matArticulacion); // Guías oscuras para contraste
+guiaL.rotation.z = Math.PI / 2;
+guiaL.position.set(0, 0.012, 0.01);
+gripperBase.add(guiaL);
+
+const guiaR = guiaL.clone();
+guiaR.position.y = -0.012;
+gripperBase.add(guiaR);
+
+// Dedos del Gripper (Mordazas) - Usando el material metálico
+const fingerGeo = new THREE.BoxGeometry(0.015, 0.06, 0.01); // Largos y finos
+
+// Dedo Izquierdo
+const fingerL = new THREE.Mesh(fingerGeo, matGripperFinger);
+fingerL.position.set(0.02, 0, 0.035); // Posición abierta (X+), sobresaliendo (Z+)
+gripperBase.add(fingerL);
+
+// Dedo Derecho
+const fingerR = new THREE.Mesh(fingerGeo, matGripperFinger);
+fingerR.position.set(-0.02, 0, 0.035); // Posición abierta (X-), sobresaliendo (Z+)
+gripperBase.add(fingerR);
+
+// Guardar referencias por si se quiere animar la apertura/cierre después
+window.piezasGripper = { base: gripperBase, fingerL: fingerL, fingerR: fingerR };
+
+// =========================================================================
+// SISTEMA DE CONTROL Y ANIMACIÓN
+// =========================================================================
 
 window.piezasRobot = { j1: J1, j2: J2, j3: J3, j4: J4, j5: J5, j6: J6 };
+
 // FUNCIÓN GLOBAL QUE CONTROLARÁ LA ANIMACIÓN
 window.actualizarGemeloDigital = function(angulos) {
-    // Límites nativos del E05
     const limites = [360, 135, 153, 360, 180, 360];
     
-    // Convertir y validar que sean números reales
     const validados = angulos.map((ang, i) => {
         const num = parseFloat(ang) || 0;
         return Math.max(-limites[i], Math.min(limites[i], num));
     });
 
-    // Mapeo anatómico directo a la animación 3D
     window.piezasRobot.j1.rotation.y = validados[0] * (Math.PI / 180);
-    window.piezasRobot.j2.rotation.z = validados[1] * (Math.PI / 180);
+    window.piezasRobot.j2.rotation.z = -validados[1] * (Math.PI / 180);
     window.piezasRobot.j3.rotation.z = validados[2] * (Math.PI / 180);
     window.piezasRobot.j4.rotation.y = validados[3] * (Math.PI / 180);
     window.piezasRobot.j5.rotation.z = validados[4] * (Math.PI / 180);
     window.piezasRobot.j6.rotation.y = validados[5] * (Math.PI / 180);
 
-    // Actualizar textos de los bloques en tu Dashboard automáticamente
-    document.querySelector("#joint-j1 span").innerText = `${validados[0].toFixed(1)}°`;
-    document.querySelector("#joint-j2 span").innerText = `${validados[1].toFixed(1)}°`;
-    document.querySelector("#joint-j3 span").innerText = `${validados[2].toFixed(1)}°`;
-    document.querySelector("#joint-j4 span").innerText = `${validados[3].toFixed(1)}°`;
-    document.querySelector("#joint-j5 span").innerText = `${validados[4].toFixed(1)}°`;
-    document.querySelector("#joint-j6 span").innerText = `${validados[5].toFixed(1)}°`;
+    const joints = ["j1", "j2", "j3", "j4", "j5", "j6"];
+    joints.forEach((j, i) => {
+        const element = document.querySelector(`#joint-${j} span`);
+        if (element) {
+            element.innerText = `${validados[i].toFixed(1)}°`;
+        }
+    });
 };
 
-// Bucle de rendering continuo
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
@@ -179,7 +232,6 @@ function animate() {
 }
 animate();
 
-// Evento de ajuste responsivo
 window.addEventListener('resize', () => {
     camera.aspect = contenedor.clientWidth / contenedor.clientHeight;
     camera.updateProjectionMatrix();
