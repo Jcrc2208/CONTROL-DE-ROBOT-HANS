@@ -12,5 +12,5 @@ cps.HRIF_GrpEnable(0, 0); cps.HRIF_SetOverride(0, 0, 15)
 
 #atributo ret para almacenar el resultado de la función HRIF_HRAppCmd
 #ret =
-ret = cps.HRIF_HRAppCmd(0,'hr_gri_plugins','GripperCatchMoveTo',[2,0],result)
+ret = cps.HRIF_HRAppCmd(0,'hr_gri_plugins','GripperCatchMoveTo',[2,1000],result)
 
