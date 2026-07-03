@@ -15,7 +15,6 @@ cps = CPSClient()
 
 
 
-
  #ORIENTACIÓN (Usamos la misma para mantener estabilidad)
 ORIENTATION = [27.859, -7.479, 107.514, 1.919, 62.763, 0.412] 
 
