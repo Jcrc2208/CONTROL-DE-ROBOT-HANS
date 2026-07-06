@@ -205,10 +205,14 @@ def start_jog():
     try:
         data = request.get_json()
         joint = int(data.get('joint', 0))
-        direction = int(data.get('direction', 1)) # 1 para +, -1 para -
-        state = int(data.get('state', 1))         # 1 = Ejecutar movimiento por defecto
+        direction_input = int(data.get('direction', 1)) # -1 o 1 desde la web
+        state = int(data.get('state', 1))  
+        # Mapeo binario correcto validado por el controlador (Ret: 0)
+        # Si viene -1, enviamos 0. Si viene 1, enviamos 1.
+        direction = 0 if direction_input == -1 else 1 
         
-        # Enviamos el 'state' que requiere internamente el SDK a través del manager
+        print(f"Moviendo -> J{joint+1} | Dirección SDK: {direction} | Estado: {state}")
+
         resultado = robot.iniciar_long_jog(joint, direction, state)
         return jsonify({"status": "success", "result": resultado}), 200
     except Exception as e:
