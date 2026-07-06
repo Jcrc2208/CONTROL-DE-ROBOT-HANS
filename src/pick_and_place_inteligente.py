@@ -15,6 +15,8 @@ TRASLACION_SEGURA_1 = [386.760, 213.830, 412.385, 176.867, 8.911,-154.484]
 TRASLACION_SEGURA_2 = [384.299, -158.737, 333.606, -179.087, 1.793, 158.107]
 ORIENTATION = [27.859, -7.479, 107.514, 1.919, 62.763, 0.412] 
 
+
+#lo siguiente seria integran los algoritmos de inteligencia artificial para la detección de objetos y la planificación de trayectorias, pero por ahora se mantiene la secuencia básica de pick and place con el gripper.
 def inicializar():
     if cps.HRIF_Connect(0, IP, PORT) != 0: raise RuntimeError("Error de conexión")
     cps.HRIF_Connect2Box(0); cps.HRIF_Electrify(0); cps.HRIF_Connect2Controller(0)
