@@ -163,12 +163,13 @@ window.actualizarGemeloDigital = function(angulos) {
     window.piezasRobot.j6.rotation.y = validados[5] * (Math.PI / 180);
 
     // Actualizar textos de los bloques en tu Dashboard automáticamente
-    document.querySelector("#joint-j1 span").innerText = `${validados[0].toFixed(1)}°`;
-    document.querySelector("#joint-j2 span").innerText = `${validados[1].toFixed(1)}°`;
-    document.querySelector("#joint-j3 span").innerText = `${validados[2].toFixed(1)}°`;
-    document.querySelector("#joint-j4 span").innerText = `${validados[3].toFixed(1)}°`;
-    document.querySelector("#joint-j5 span").innerText = `${validados[4].toFixed(1)}°`;
-    document.querySelector("#joint-j6 span").innerText = `${validados[5].toFixed(1)}°`;
+    // Actualizar textos de los bloques en tu Dashboard automáticamente
+    document.querySelector("#joint-j1 span.val").innerText = `${validados[0].toFixed(1)}°`;
+    document.querySelector("#joint-j2 span.val").innerText = `${validados[1].toFixed(1)}°`;
+    document.querySelector("#joint-j3 span.val").innerText = `${validados[2].toFixed(1)}°`;
+    document.querySelector("#joint-j4 span.val").innerText = `${validados[3].toFixed(1)}°`;
+    document.querySelector("#joint-j5 span.val").innerText = `${validados[4].toFixed(1)}°`;
+    document.querySelector("#joint-j6 span.val").innerText = `${validados[5].toFixed(1)}°`;
 };
 
 // Bucle de rendering continuo
@@ -184,4 +185,65 @@ window.addEventListener('resize', () => {
     camera.aspect = contenedor.clientWidth / contenedor.clientHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(contenedor.clientWidth, contenedor.clientHeight);
+});
+
+
+const botonesJog = document.querySelectorAll('.btn-jog');
+let jogInterval = null; // Variable para guardar el pulso de vida
+
+botonesJog.forEach(boton => {
+    
+    // FUNCIÓN PARA INICIAR EL MOVIMIENTO
+    const startJog = (e) => {
+        e.preventDefault(); // Evita comportamientos nativos raros en tablets
+        if (jogInterval) return; // Si ya se está moviendo, no hacer nada
+
+        const articulacion = parseInt(boton.getAttribute('data-joint'));
+        const direccion = parseInt(boton.getAttribute('data-dir'));
+        
+        // 1. Enviar comando de arranque
+        fetch("http://localhost:5000/api/robot/jog_start", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ articulacion, direccion })
+        });
+
+        // 2. Iniciar el "latido" (Heartbeat) cada 200ms
+        // Si el servidor no recibe esto en 500ms, el robot frenará por seguridad
+        jogInterval = setInterval(() => {
+            fetch("http://localhost:5000/api/robot/jog_keepalive", { 
+                method: "POST" 
+            }).catch(() => console.warn("Pulso perdido por problema de red"));
+        }, 200);
+    };
+
+    // FUNCIÓN PARA DETENER EL MOVIMIENTO
+    const stopJog = (e) => {
+        e.preventDefault();
+        if (!jogInterval) return; // Si no se estaba moviendo, no hacer nada
+
+        // 1. Detener el latido localmente
+        clearInterval(jogInterval);
+        jogInterval = null;
+
+        const articulacion = parseInt(boton.getAttribute('data-joint'));
+        const direccion = parseInt(boton.getAttribute('data-dir'));
+
+        // 2. Enviar comando explícito de paro al soltar el botón
+        fetch("http://localhost:5000/api/robot/jog_stop", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ articulacion, direccion })
+        });
+    };
+
+    // --- EVENTOS PARA RATÓN (PC) ---
+    boton.addEventListener('mousedown', startJog);
+    boton.addEventListener('mouseup', stopJog);
+    boton.addEventListener('mouseleave', stopJog); // Frena si el cursor sale del botón por accidente
+
+    // --- EVENTOS PARA PANTALLAS TÁCTILES (TABLET/MÓVIL) ---
+    boton.addEventListener('touchstart', startJog, {passive: false});
+    boton.addEventListener('touchend', stopJog);
+    boton.addEventListener('touchcancel', stopJog);
 });

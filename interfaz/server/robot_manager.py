@@ -110,3 +110,42 @@ class RobotHuayanManager:
             "corriente_articulaciones": corrientes, 
             "temperatura_articulaciones": temperaturas
         }
+    
+    def iniciar_jog_continuo(self, articulacion, direccion):
+        """Inicia el movimiento continuo de una articulación."""
+        dir_sdk = 1 if direccion > 0 else 0
+        try:
+            if hasattr(self.sdk, 'HRIF_LongJogJ'):
+                # state: 1 para iniciar el movimiento
+                self.sdk.HRIF_LongJogJ(self.box_id, self.rbt_id, articulacion, dir_sdk, 1)
+                return True
+        except Exception as e:
+            print(f"Error al iniciar Jog: {e}")
+        return False
+
+    def mantener_jog_vivo(self):
+        """
+        Watchdog/Hombre Muerto: Debe llamarse cada < 500ms.
+        Si la red se cae, esta función deja de llamarse y el robot frena solo.
+        """
+        try:
+            if hasattr(self.sdk, 'HRIF_LongMoveEvent'):
+                self.sdk.HRIF_LongMoveEvent(self.box_id, self.rbt_id)
+                return True
+        except:
+            pass
+        return False
+        
+    def detener_jog_continuo(self, articulacion, direccion):
+        """Detiene la articulación explícitamente cuando el usuario suelta el botón."""
+        dir_sdk = 1 if direccion > 0 else 0
+        try:
+            if hasattr(self.sdk, 'HRIF_LongJogJ'):
+                # state: 0 para detener el movimiento
+                self.sdk.HRIF_LongJogJ(self.box_id, self.rbt_id, articulacion, dir_sdk, 0)
+                # Seguridad extra: forzar paro general del grupo
+                self.sdk.HRIF_GrpStop(self.box_id, self.rbt_id)
+                return True
+        except Exception as e:
+            print(f"Error al detener Jog: {e}")
+        return False

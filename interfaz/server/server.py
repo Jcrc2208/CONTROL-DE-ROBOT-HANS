@@ -206,7 +206,27 @@ def login():
     except Exception as e:
         db.session.rollback()  # Buena práctica por si falla el commit anterior
         return jsonify({"status": "error", "message": str(e)}), 500
-        
+
+# =====================================================================
+# RUTAS DE CONTROL MANUAL FLUIDO (JOGGING CON WATCHDOG)
+# =====================================================================
+@app.route('/api/robot/jog_start', methods=['POST'])
+def jog_start():
+    data = request.get_json()
+    robot.iniciar_jog_continuo(data['articulacion'], data['direccion'])
+    return jsonify({"status": "success"})
+
+@app.route('/api/robot/jog_keepalive', methods=['POST'])
+def jog_keepalive():
+    robot.mantener_jog_vivo()
+    return jsonify({"status": "success"})
+
+@app.route('/api/robot/jog_stop', methods=['POST'])
+def jog_stop():
+    data = request.get_json()
+    robot.detener_jog_continuo(data['articulacion'], data['direccion'])
+    return jsonify({"status": "success"})
+    
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
