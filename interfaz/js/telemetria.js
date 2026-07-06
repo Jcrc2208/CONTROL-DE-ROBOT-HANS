@@ -1,19 +1,20 @@
 // TELEMETRÍA - CONTROL DE POSICIONES Y ÁNGULOS ARTICULARES (CORREGIDO)
+const URL_BASE = "http://localhost:5000/api/robot";
+
 document.addEventListener("DOMContentLoaded", () => {
-    const URL_BASE = "http://localhost:5000/api/robot";
 
     function obtenerTelemetriaEstandar() {
         fetch(`${URL_BASE}/telemetria`)
             .then(res => res.json())
             .then(data => {
-                // 1. Actualizar Coordenadas Cartesianas (TCP) en el Dashboard
-                if (data.posicion_cartesiana && document.getElementById("pos-x")) {
-                    document.querySelector("#pos-x span").innerText = data.posicion_cartesiana[0].toFixed(2);
-                    document.querySelector("#pos-y span").innerText = data.posicion_cartesiana[1].toFixed(2);
-                    document.querySelector("#pos-z span").innerText = data.posicion_cartesiana[2].toFixed(2);
-                    document.querySelector("#rot-rx span").innerText = data.posicion_cartesiana[3].toFixed(2);
-                    document.querySelector("#rot-ry span").innerText = data.posicion_cartesiana[4].toFixed(2);
-                    document.querySelector("#rot-rz span").innerText = data.posicion_cartesiana[5].toFixed(2);
+                // 1. Actualizar Coordenadas Cartesianas (TCP) en el Dashboard (MODIFICADO CON LAS NUEVAS CLASES)
+                if (data.posicion_cartesiana) {
+                    if (document.querySelector(".val-x")) document.querySelector(".val-x").innerText = data.posicion_cartesiana[0].toFixed(2);
+                    if (document.querySelector(".val-y")) document.querySelector(".val-y").innerText = data.posicion_cartesiana[1].toFixed(2);
+                    if (document.querySelector(".val-z")) document.querySelector(".val-z").innerText = data.posicion_cartesiana[2].toFixed(2);
+                    if (document.querySelector(".val-rx")) document.querySelector(".val-rx").innerText = data.posicion_cartesiana[3].toFixed(2);
+                    if (document.querySelector(".val-ry")) document.querySelector(".val-ry").innerText = data.posicion_cartesiana[4].toFixed(2);
+                    if (document.querySelector(".val-rz")) document.querySelector(".val-rz").innerText = data.posicion_cartesiana[5].toFixed(2);
                 }
 
                 // 2. CONEXIÓN CRÍTICA: Enviar ángulos reales al Gemelo Digital 3D y textos
@@ -31,7 +32,61 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(obtenerTelemetriaEstandar, 100);
 });
 
-// El resto de tu código de Three.js (scene, camera, meshes, window.actualizarGemeloDigital...) se queda EXACTAMENTE IGUAL.
+// --- MANEJO DE EVENTOS JOG (BOTONES + Y -) ---
+const botonesJog = document.querySelectorAll(".btn-jog");
+botonesJog.forEach(boton => {
+    // Al presionar el botón (Soporta Mouse y Pantallas Táctiles)
+    boton.addEventListener("pointerdown", (e) => {
+        e.preventDefault();
+        
+        // CORRECCIÓN: Convertimos a entero (int) para que el backend y el SDK de CPS no tengan problemas de tipos
+        const joint = parseInt(boton.getAttribute("data-joint"), 10);
+        const direction = parseInt(boton.getAttribute("data-dir"), 10);
+
+        fetch(`${URL_BASE}/jog/start`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ joint: joint, direction: direction })
+        }).catch(err => console.error("Error al iniciar LongJog:", err));
+    });
+
+    // Al soltar el click o remover el dedo
+    boton.addEventListener("pointerup", stopRobotMovement);
+    // Por seguridad: si arrastran el cursor fuera del botón mientras presionan, se detiene
+    boton.addEventListener("pointerleave", stopRobotMovement);
+});
+
+// CORRECCIÓN: Esta función ahora puede leer perfectamente 'URL_BASE' al estar en el mismo nivel de ámbito
+function stopRobotMovement() {
+    fetch(`${URL_BASE}/jog/stop`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+    }).catch(err => console.error("Error al detener LongJog:", err));
+}
+
+// --- MANEJO DEL SLIDER DE VELOCIDAD ---
+const sliderVelocidad = document.getElementById("speed-slider");
+const textoVelocidad = document.getElementById("speed-value");
+
+if (sliderVelocidad) {
+    sliderVelocidad.addEventListener("input", (e) => {
+        const valor = e.target.value;
+        textoVelocidad.innerText = `${valor}%`;
+    });
+
+    // Enviamos el cambio al servidor únicamente cuando el usuario suelta el slider (Evita saturar peticiones HTTP)
+    sliderVelocidad.addEventListener("change", (e) => {
+        // CORRECCIÓN: Convertimos el valor a un entero limpio antes de mandarlo por JSON
+        const valor = parseInt(e.target.value, 10);
+        
+        fetch(`${URL_BASE}/speed`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ speed: valor })
+        }).catch(err => console.error("Error al enviar velocidad al robot:", err));
+    });
+}
+
 // Telemetria modelo 3D - REDISEÑO PARA COBOT HANS E05 CON GRIPPER METÁLICO
 const contenedor = document.getElementById('cobot-visual-area');
 
@@ -73,12 +128,11 @@ scene.add(axesHelper);
 const matRobot = new THREE.MeshStandardMaterial({ color: 0xf5f5f7, roughness: 0.25, metalness: 0.05 }); 
 const matArticulacion = new THREE.MeshStandardMaterial({ color: 0x1d2026, metalness: 0.6, roughness: 0.3 });
 
-// --- ACTUALIZACIÓN: Material específico para las mordazas del gripper con acabado metálico ---
+// --- MATERIAL CORREGIDO: Ajuste físico para simular metal/aluminio sin reflejos de entorno oscuros ---
 const matGripperFinger = new THREE.MeshStandardMaterial({ 
-    color: 0xaaaaaa, // Color base gris claro para metal
-    metalness: 1.0,  // Totalmente metálico
-    roughness: 0.1,  // Muy pulido/brillante
-    envMapIntensity: 1.0 // Intensidad de reflexión (si añades un mapa de entorno luego)
+    color: 0xdddddd,     // Gris claro industrial limpio (aluminio)
+    metalness: 0.4,      // Balanceado para que la luz directa lo ilumine en vez de reflejar el "vacío"
+    roughness: 0.4,      // Difusión moderada para captar mejor los brillos de la escena
 });
 // --------------------------------------------------------------------------------------------
 
@@ -126,8 +180,8 @@ function agregarVolumenE05(padre, geo, mat, x = 0, y = 0, z = 0, rotX = 0, rotZ 
     mesh.position.set(x, y, z);
     mesh.rotation.x = rotX;
     mesh.rotation.z = rotZ;
-    padre.add(mesh);
-    return mesh; // Devolvemos el mesh por si necesitamos manipularlo individualmente
+    padre.add(mesh); // Corregido: referencia directa al parámetro padre
+    return mesh;
 }
 
 // =========================================================================
@@ -152,46 +206,123 @@ agregarVolumenE05(J4, new THREE.CylinderGeometry(0.035, 0.035, 0.07, 24), matArt
 agregarVolumenE05(J5, new THREE.CylinderGeometry(0.032, 0.032, 0.06, 24), matArticulacion, 0, 0, 0, Math.PI / 2);
 
 // =========================================================================
-// EJE 6 Y AGREGADO DEL GRIPPER (Pinza Paralela Metálica)
+// EJE 6 Y AGREGADO DEL GRIPPER PRO (Estilo DH Robotics Bitono)
 // =========================================================================
 
 // Eje 6: Brida final (Plato rotatorio plano de ensamble)
 const bridaFinal = agregarVolumenE05(J6, new THREE.CylinderGeometry(0.034, 0.034, 0.02, 24), matRobot, 0, 0, 0, Math.PI / 2); 
 
-// --- DISEÑO DEL GRIPPER (Acoplado a J6 para que rote con él) ---
+// --- NUEVOS MATERIALES DETALLADOS PARA EL GRIPPER ---
+const matGripperCuerpo = new THREE.MeshStandardMaterial({ 
+    color: 0x222222,     // Negro mate/antracita para el chasis principal
+    metalness: 0.5, 
+    roughness: 0.5 
+});
 
-// Base del Gripper (Cuerpo principal)
-const gripperBaseGeo = new THREE.BoxGeometry(0.06, 0.04, 0.06); 
-// Usamos el material metálico también para el cuerpo principal del gripper para consistencia
-const gripperBase = new THREE.Mesh(gripperBaseGeo, matGripperFinger); 
-gripperBase.position.set(0, 0, 0.04); // Desfase en Z para salir de la brida
+const matGripperMecanismo = new THREE.MeshStandardMaterial({ 
+    color: 0x111111,     // Negro más oscuro para los eslabones móviles
+    metalness: 0.7, 
+    roughness: 0.3 
+});
+
+const matGripperMetalClaro = new THREE.MeshStandardMaterial({ 
+    color: 0xdddddd,     // Aluminio pulido para las puntas y pasadores
+    metalness: 0.8, 
+    roughness: 0.2 
+});
+
+// Contenedor principal del Gripper (Anclado a J6)
+const gripperBase = new THREE.Group();
+gripperBase.position.set(0, 0, 0.01); // Pegado a la brida
 J6.add(gripperBase);
 
-// Guías de deslizamiento (Detalle estético)
-const guiaGeo = new THREE.CylinderGeometry(0.005, 0.005, 0.06, 16);
-const guiaL = new THREE.Mesh(guiaGeo, matArticulacion); // Guías oscuras para contraste
-guiaL.rotation.z = Math.PI / 2;
-guiaL.position.set(0, 0.012, 0.01);
-gripperBase.add(guiaL);
+// 1. CUERPO CENTRAL (Chasis estilizado)
+const centroGeo = new THREE.BoxGeometry(0.04, 0.03, 0.07);
+const cuerpoCentro = new THREE.Mesh(centroGeo, matGripperCuerpo);
+cuerpoCentro.position.set(0, 0, 0.035);
+gripperBase.add(cuerpoCentro);
 
-const guiaR = guiaL.clone();
-guiaR.position.y = -0.012;
-gripperBase.add(guiaR);
+// Placas laterales embellecedoras (Efecto biselado/ensanchado)
+const placaLatGeo = new THREE.BoxGeometry(0.01, 0.04, 0.05);
+const placaL = new THREE.Mesh(placaLatGeo, matGripperCuerpo);
+placaL.position.set(0.022, 0, 0.03);
+gripperBase.add(placaL);
 
-// Dedos del Gripper (Mordazas) - Usando el material metálico
-const fingerGeo = new THREE.BoxGeometry(0.015, 0.06, 0.01); // Largos y finos
+const placaR = placaL.clone();
+placaR.position.x = -0.022;
+gripperBase.add(placaR);
 
-// Dedo Izquierdo
-const fingerL = new THREE.Mesh(fingerGeo, matGripperFinger);
-fingerL.position.set(0.02, 0, 0.035); // Posición abierta (X+), sobresaliendo (Z+)
+// Acople cilíndrico superior (Donde se une al robot)
+const acopleGeo = new THREE.CylinderGeometry(0.028, 0.032, 0.015, 24);
+const acople = new THREE.Mesh(acopleGeo, matGripperMetalClaro);
+acople.rotation.x = Math.PI / 2;
+acople.position.set(0, 0, 0.002);
+gripperBase.add(acople);
+
+
+// 2. MECANISMO DE ESLABONES (Brazos negros del pantógrafo)
+const eslabonGeo = new THREE.BoxGeometry(0.006, 0.008, 0.035);
+const pasadorGeo = new THREE.CylinderGeometry(0.003, 0.003, 0.012, 16);
+
+// --- LADO IZQUIERDO (Eslabones) ---
+const brazoL1 = new THREE.Mesh(eslabonGeo, matGripperMecanismo);
+brazoL1.position.set(0.022, 0.01, 0.055);
+brazoL1.rotation.y = Math.PI / 6; // Inclinación hacia afuera
+gripperBase.add(brazoL1);
+
+const brazoL2 = brazoL1.clone();
+brazoL2.position.y = -0.01; // Eslabón paralelo inferior
+gripperBase.add(brazoL2);
+
+// Detalles de pasadores brillantes (Pernos plateados en las uniones)
+const pernoL = new THREE.Mesh(pasadorGeo, matGripperMetalClaro);
+pernoL.rotation.x = Math.PI / 2;
+pernoL.position.set(0.028, 0.01, 0.068);
+gripperBase.add(pernoL);
+
+
+// --- LADO DERECHO (Eslabones) ---
+const brazoR1 = new THREE.Mesh(eslabonGeo, matGripperMecanismo);
+brazoR1.position.set(-0.022, 0.01, 0.055);
+brazoR1.rotation.y = -Math.PI / 6; // Inclinación simétrica
+gripperBase.add(brazoR1);
+
+const brazoR2 = brazoR1.clone();
+brazoR2.position.y = -0.01;
+gripperBase.add(brazoR2);
+
+const pernoR = pernoL.clone();
+pernoR.position.x = -0.028;
+gripperBase.add(pernoR);
+
+
+// 3. DEDOS / MORDAZAS FINALES (Puntas Metálicas de Sujeción)
+// Base del dedo (Bloque de aluminio) + Almohadilla de agarre
+const dedoBaseGeo = new THREE.BoxGeometry(0.012, 0.035, 0.025);
+const almohadillaGeo = new THREE.BoxGeometry(0.003, 0.028, 0.022);
+
+// --- Dedo Izquierdo ---
+const fingerL = new THREE.Group();
+fingerL.position.set(0.032, 0, 0.075); // Posición abierta
+
+const metalDedoL = new THREE.Mesh(dedoBaseGeo, matGripperMetalClaro);
+const gomaDedoL = new THREE.Mesh(almohadillaGeo, matGripperCuerpo); // Goma interna oscura
+gomaDedoL.position.x = -0.007; 
+fingerL.add(metalDedoL, gomaDedoL);
 gripperBase.add(fingerL);
 
-// Dedo Derecho
-const fingerR = new THREE.Mesh(fingerGeo, matGripperFinger);
-fingerR.position.set(-0.02, 0, 0.035); // Posición abierta (X-), sobresaliendo (Z+)
+// --- Dedo Derecho ---
+const fingerR = new THREE.Group();
+fingerR.position.set(-0.032, 0, 0.075); // Posición abierta simétrica
+
+const metalDedoR = new THREE.Mesh(dedoBaseGeo, matGripperMetalClaro);
+const gomaDedoR = new THREE.Mesh(almohadillaGeo, matGripperCuerpo);
+gomaDedoR.position.x = 0.007; 
+fingerR.add(metalDedoR, gomaDedoR);
 gripperBase.add(fingerR);
 
-// Guardar referencias por si se quiere animar la apertura/cierre después
+
+// Guardar referencias manteniendo los mismos nombres por si animas apertura/cierre
 window.piezasGripper = { base: gripperBase, fingerL: fingerL, fingerR: fingerR };
 
 // =========================================================================
@@ -200,7 +331,7 @@ window.piezasGripper = { base: gripperBase, fingerL: fingerL, fingerR: fingerR }
 
 window.piezasRobot = { j1: J1, j2: J2, j3: J3, j4: J4, j5: J5, j6: J6 };
 
-// FUNCIÓN GLOBAL QUE CONTROLARÁ LA ANIMACIÓN
+// FUNCIÓN GLOBAL QUE CONTROLARÁ LA ANIMACIÓN (MODIFICADA PARA PRESERVAR BOTONES)
 window.actualizarGemeloDigital = function(angulos) {
     const limites = [360, 135, 153, 360, 180, 360];
     
@@ -216,13 +347,13 @@ window.actualizarGemeloDigital = function(angulos) {
     window.piezasRobot.j5.rotation.z = validados[4] * (Math.PI / 180);
     window.piezasRobot.j6.rotation.y = validados[5] * (Math.PI / 180);
 
-    const joints = ["j1", "j2", "j3", "j4", "j5", "j6"];
-    joints.forEach((j, i) => {
-        const element = document.querySelector(`#joint-${j} span`);
+    // MODIFICADO: Ahora apunta exclusivamente al ID del span dinámico interno val-jX
+    for (let i = 0; i < 6; i++) {
+        const element = document.getElementById(`val-j${i + 1}`);
         if (element) {
             element.innerText = `${validados[i].toFixed(1)}°`;
         }
-    });
+    }
 };
 
 function animate() {

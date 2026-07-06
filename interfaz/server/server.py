@@ -1,15 +1,13 @@
 from werkzeug.security import check_password_hash
-from werkzeug.security import generate_password_hash # Importar al inicio del archivo
-from flask import Flask, jsonify
+from werkzeug.security import generate_password_hash 
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
+from datetime import datetime, timezone  # <-- Modificado para soportar zonas horarias (Python 3.13+)
 from robot_manager import RobotHuayanManager
-from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 CORS(app)  
-
 
 # Desarrollo local (SQLite). Al pasar a producción, solo cambias esta URI por la de PostgreSQL
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///robot_monitoreo.db'
@@ -21,6 +19,8 @@ robot = RobotHuayanManager()
 contador_lecturas = 0
 FRECUENCIA_MUESTREO = 10  
 
+# MODELOS DE LA BASE DE DATOS (SQLAlchemy)
+
 class Usuario(db.Model):
     __tablename__ = 'usuarios'
     id = db.Column(db.Integer, primary_key=True)
@@ -29,12 +29,12 @@ class Usuario(db.Model):
     password_hash = db.Column(db.String(255), nullable=False)
     rol = db.Column(db.String(20), nullable=False, default='User')  # 'Admin' o 'User'
     ultima_conexion = db.Column(db.DateTime, nullable=True)
-    fecha_creacion = db.Column(db.DateTime, default=datetime.utcnow)
+    fecha_creacion = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc)) # <-- Corregido deprecation
 
 class HistorialCinematico(db.Model):
     __tablename__ = 'historial_cinematico'
     id = db.Column(db.Integer, primary_key=True)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc)) # <-- Corregido deprecation
     # Ángulos articulares (J1 - J6)
     j1 = db.Column(db.Float)
     j2 = db.Column(db.Float)
@@ -53,7 +53,7 @@ class HistorialCinematico(db.Model):
 class EstadoTermicoElectrico(db.Model):
     __tablename__ = 'estado_termico_electrico'
     id = db.Column(db.Integer, primary_key=True)
-    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    timestamp = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc)) # <-- Corregido deprecation
     # Temperaturas por articulación (°C)
     temp_j1 = db.Column(db.Float)
     temp_j2 = db.Column(db.Float)
@@ -69,7 +69,9 @@ class EstadoTermicoElectrico(db.Model):
     corriente_j5 = db.Column(db.Float)
     corriente_j6 = db.Column(db.Float)
 
-# 1. Obtener Telemetría (Para el sonde ciclicio de la interfaz)
+# ENDPOINTS / RUTAS DEL SERVIDOR
+
+# 1. Obtener Telemetría (Para el sondeo cíclico de la interfaz)
 @app.route('/api/robot/telemetria', methods=['GET'])
 def get_telemetria():
     global contador_lecturas
@@ -81,7 +83,7 @@ def get_telemetria():
         contador_lecturas = 0  # Reiniciar contador
         
         try:
-            timestamp_actual = datetime.utcnow()
+            timestamp_actual = datetime.now(timezone.utc) # <-- Corregido deprecation
             
             # Extraer y guardar datos cinemáticos si existen en el paquete
             if "angulos_articulares" in paquete and "posicion_cartesiana" in paquete:
@@ -95,8 +97,8 @@ def get_telemetria():
                     rot_rx=cartesianas[3], rot_ry=cartesianas[4], rot_rz=cartesianas[5]
                 )
                 db.session.add(nueva_cinematica)
-
-            # MODIFICACIÓN DE LLAVES: Cambiados a tus nombres originales del SDK
+                
+            # Extraer y guardar datos térmicos y eléctricos
             if "temperatura_articulaciones" in paquete and "corriente_articulaciones" in paquete:
                 temps = paquete["temperatura_articulaciones"]
                 corrientes = paquete["corriente_articulaciones"]
@@ -107,44 +109,40 @@ def get_telemetria():
                     corriente_j1=corrientes[0], corriente_j2=corrientes[1], corriente_j3=corrientes[2], corriente_j4=corrientes[3], corriente_j5=corrientes[4], corriente_j6=corrientes[5]
                 )
                 db.session.add(nuevo_estado)
-            
-            # Confirmar y asentar los cambios en el archivo/servidor de base de datos
+
+            # Confirmar los cambios en la base de datos SQLite
             db.session.commit()
-            
+
         except Exception as e:
-            db.session.rollback()  # Revierte los cambios si ocurre un error en la base de datos
-            print(f"Error al registrar datos en el muestreo histórico: {e}")
+            db.session.rollback()
+            print(f"Error al escribir en la Base de Datos: {e}")
+            
+    return jsonify(paquete)
 
-    return jsonify(paquete), 200
-
-# NUEVA RUTA: Registrar usuarios desde la Web
+# 2. Registrar usuarios desde la Web
 @app.route('/api/usuarios', methods=['POST'])
 def registrar_usuario():
     try:
         data = request.get_json()
         
-        # Validaciones iniciales elementales
         if not data or not data.get('nombre') or not data.get('correo') or not data.get('password'):
             return jsonify({"status": "error", "message": "Faltan datos obligatorios."}), 400
             
-        # Verificar si el correo ya existe en la Base de Datos
         correo_existe = Usuario.query.filter_by(correo=data['correo']).first()
         if correo_existe:
             return jsonify({"status": "error", "message": "El correo ya está registrado."}), 400
 
-        # Encriptar la contraseña por seguridad industrial
         hash_password = generate_password_hash(data['password'])
 
-        # Instanciar el objeto mapeado a la tabla a través de SQLAlchemy
         nuevo_usuario = Usuario(
             nombre=data['nombre'],
             correo=data['correo'],
             password_hash=hash_password,
-            rol=data['rol'] # Recibe 'Admin' o 'User' desde el SELECT
+            rol=data['rol'] 
         )
 
         db.session.add(nuevo_usuario)
-        db.session.commit() # Consolida la transacción física en robot_monitoreo.db
+        db.session.commit() 
 
         return jsonify({"status": "success", "message": "Usuario creado correctamente"}), 201
 
@@ -152,14 +150,11 @@ def registrar_usuario():
         db.session.rollback()
         return jsonify({"status": "error", "message": str(e)}), 500
 
-# NUEVA RUTA: Obtener todos los usuarios de la BD
+# 3. Obtener todos los usuarios de la BD
 @app.route('/api/usuarios', methods=['GET'])
 def obtener_usuarios():
     try:
-        # Consultar todos los registros de la tabla usuarios en SQLite
         usuarios_bd = Usuario.query.all()
-        
-        # Mapear los objetos de SQLAlchemy a un formato de lista/diccionario ejecutable por JS
         lista_usuarios = []
         for u in usuarios_bd:
             lista_usuarios.append({
@@ -167,7 +162,6 @@ def obtener_usuarios():
                 "nombre": u.nombre,
                 "correo": u.correo,
                 "rol": u.rol,
-                # Formatear la fecha si existe, de lo contrario poner un guion
                 "ultima_conexion": u.ultima_conexion.strftime('%d/%m/%Y %H:%M') if u.ultima_conexion else "Sin conexión"
             })
             
@@ -175,9 +169,10 @@ def obtener_usuarios():
 
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+
+# 4. Control de Acceso (Login)
 @app.route('/api/login', methods=['POST', 'OPTIONS'])
 def login():
-    # Manejo explícito de CORS preflight manual
     if request.method == 'OPTIONS':
         return jsonify({"status": "success"}), 200
         
@@ -186,27 +181,65 @@ def login():
         if not data or not data.get('correo') or not data.get('password'):
             return jsonify({"status": "error", "message": "Faltan correo o contraseña."}), 400
 
-        # Buscar al usuario en la base de datos de SQLite por su correo
         usuario = Usuario.query.filter_by(correo=data['correo']).first()
 
-        # Verificar si el usuario existe y si el hash de la contraseña coincide
         if usuario and check_password_hash(usuario.password_hash, data['password']):
-            # Registrar última conexión
-            usuario.ultima_conexion = datetime.utcnow()
+            usuario.ultima_conexion = datetime.now(timezone.utc) # <-- Corregido deprecation
             db.session.commit()
             
             return jsonify({
                 "status": "success",
                 "nombre": usuario.nombre,
-                "rol": usuario.rol  # Retorna 'Admin' o 'User'
+                "rol": usuario.rol  
             }), 200
         else:
             return jsonify({"status": "error", "message": "Credenciales inválidas."}), 401
 
     except Exception as e:
-        db.session.rollback()  # Buena práctica por si falla el commit anterior
+        db.session.rollback()  
         return jsonify({"status": "error", "message": str(e)}), 500
+
+# 5. Iniciar Movimiento Manual (Long Jog)
+@app.route('/api/robot/jog/start', methods=['POST'])
+def start_jog():
+    try:
+        data = request.get_json()
+        joint = int(data.get('joint', 0))
+        direction = int(data.get('direction', 1)) # 1 para +, -1 para -
+        state = int(data.get('state', 1))         # 1 = Ejecutar movimiento por defecto
         
+        # Enviamos el 'state' que requiere internamente el SDK a través del manager
+        resultado = robot.iniciar_long_jog(joint, direction, state)
+        return jsonify({"status": "success", "result": resultado}), 200
+    except Exception as e:
+        print(f"Error al ejecutar HRIF_LongJogJ: {e}")
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+# 6. Detener Movimiento Manual
+@app.route('/api/robot/jog/stop', methods=['POST'])
+def stop_jog():
+    try:
+        resultado = robot.detener_movimiento()
+        return jsonify({"status": "success", "result": resultado}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+# 7. Configurar Velocidad Global (Override)
+@app.route('/api/robot/speed', methods=['POST'])
+def cambiar_velocidad():
+    try:
+        data = request.get_json()
+        valor_velocidad = int(data.get('speed', 20)) # Por defecto 20%
+        
+        resultado = robot.configurar_velocidad(valor_velocidad)
+        return jsonify({"status": "success", "result": resultado}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+# =========================================================================
+# ARRANQUE DE LA APLICACIÓN
+# =========================================================================
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
