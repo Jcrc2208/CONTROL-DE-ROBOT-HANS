@@ -202,7 +202,9 @@
     font-weight: 500;
 }
 
-/* 5. SECCIÓN DE ANÁLISIS PREDICTIVO (Salud de Componentes)*/
+/* ==========================================================================
+   5. SECCIÓN DE ANÁLISIS PREDICTIVO (Salud de Componentes) - DISEÑO MODERNO
+   ========================================================================== */
 .predictive-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -212,8 +214,7 @@
 
 .error-panel {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
-    border-left: 5px solid #22c55e; /* Verde éxito por defecto */
+    border: 1px solid #e2e8f0; /* Borde uniforme y fino en los 4 lados */
     border-radius: 14px;
     padding: 20px;
     margin-bottom: 20px;
@@ -222,15 +223,7 @@
     flex-direction: column;
     gap: 8px;
     transition: all 0.3s ease;
-}
-
-/* --- ESTADO DE ALERTA/ERROR ACTIVO --- */
-.error-panel.danger-alert {
-    background-color: #fffafb; /* Fondo rojizo muy suave */
-    border-color: #fca5a5;     /* Borde suavizado en tonos rojos */
-    border-left-color: #ef4444; /* Rojo peligro */
-    /* Animación sutil de pulso en el borde para alertar al operador */
-    animation: border-pulse 2s infinite ease-in-out;
+    position: relative;
 }
 
 .error-panel h3 {
@@ -240,13 +233,36 @@
     margin: 0;
     display: flex;
     align-items: center;
-    gap: 8px; /* Separa el icono de FontAwesome del texto */
+    gap: 8px; 
     transition: color 0.3s ease;
 }
 
-/* Cambia también el color del título e icono si hay error */
+/* --- INDICADOR LED MODERNO (Reemplaza la pestaña verde) --- */
+.error-panel h3::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background-color: #22c55e; /* Verde éxito */
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.6); /* Pequeño brillo LED */
+}
+
+/* --- ESTADO DE ALERTA/ERROR ACTIVO --- */
+.error-panel.danger-alert {
+    background-color: #fffafb; 
+    border-color: #fca5a5;     
+    animation: border-pulse 2s infinite ease-in-out;
+}
+
 .error-panel.danger-alert h3 {
     color: #991b1b; 
+}
+
+/* Cambio del LED a rojo en caso de alerta */
+.error-panel.danger-alert h3::before {
+    background-color: #ef4444; /* Rojo peligro */
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.8); /* Pulso de luz roja */
 }
 
 .error-panel p {
@@ -277,20 +293,23 @@
     border-color: #fca5a5;
 }
 
-/* --- ANIMACIÓN DE ADVERTENCIA --- */
+/* --- ANIMACIÓN DE ADVERTENCIA SUAVE --- */
 @keyframes border-pulse {
     0% {
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.05);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.03);
+        border-color: #fca5a5;
     }
     50% {
-        box-shadow: 0 4px 16px rgba(239, 68, 68, 0.15);
-        border-left-color: #b91c1c; /* El rojo del borde se intensifica */
+        box-shadow: 0 4px 16px rgba(239, 68, 68, 0.1);
+        border-color: #ef4444; /* El borde completo se torna rojo sutilmente */
     }
     100% {
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.05);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.03);
+        border-color: #fca5a5;
     }
 }
 
+/* --- TARJETAS DE ARTICULACIONES (Se mantienen igual) --- */
 .joint-card {
     background: #ffffff;
     border: 1px solid #e2e8f0;
@@ -715,3 +734,94 @@
 }
 }
 
+/* ==========================================================================
+   Estilos Simples y Compactos para Botones y Control de Velocidad
+   ========================================================================== */
+
+/* Contenedor de botones: asegura que queden en una sola fila y centrados */
+.cartesian-block div {
+    display: flex;
+    gap: 10px; /* Reducido el espacio entre botones */
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 8px;
+}
+
+/* Botones de Comando más pequeños (Pick and Place / Detección) */
+.btn-jog {
+    flex: 1;
+    max-width: 160px; /* Limitado el ancho para que no se estiren de más */
+    padding: 6px 12px; /* Relleno interno más pequeño */
+    background-color: #ffffff;
+    color: #333333;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    font-size: 13px; /* Tipografía ligeramente más pequeña */
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.1s ease;
+}
+
+/* Efecto sutil al pasar el mouse por encima de los comandos */
+.btn-jog:hover {
+    background-color: #f0f0f0;
+}
+
+/* Botón Principal Circular (CORRER MOVIMIENTO) */
+#btn-ejecutar {
+    flex: none;
+    width: 42px;          /* Ancho fijo para mantener la forma */
+    height: 42px;         /* Alto idéntico al ancho */
+    background-color: #2196F3;
+    color: #ffffff;
+    border: 1px solid #1e88e5;
+    border-radius: 50%;   /* Hace que el botón sea un círculo perfecto */
+    font-size: 14px;      /* Tamaño óptimo para el icono de play */
+    cursor: pointer;
+    
+    /* Centrado perfecto del icono de FontAwesome */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    
+    /* Transición suave para el hover */
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 2px 6px rgba(33, 150, 243, 0.3);
+}
+
+/* Efectos interactivos */
+#btn-ejecutar:hover {
+    background-color: #1e88e5;
+    transform: scale(1.05); /* Micro-efecto de aumento al pasar el cursor */
+}
+
+#btn-ejecutar:active {
+    transform: scale(0.95); /* Efecto de hundimiento al clickear */
+}
+
+/* Contenedor del Slider de Velocidad */
+.speed-slider-container {
+    margin-bottom: 10px;
+}
+
+.speed-slider-container label {
+    font-size: 13px;
+    color: #333333;
+    display: block;
+    margin-bottom: 4px;
+}
+
+/* El texto del porcentaje (ej. 50%) */
+#speed-value {
+    font-weight: bold;
+    color: #333333;
+}
+
+/* Barra del Slider más angosta */
+#speed-slider {
+    width: 100%;
+    max-width: 180px; /* Reducido el largo de la barra de velocidad */
+    height: 4px;
+    cursor: pointer;
+}
