@@ -112,7 +112,7 @@ const loginForm = document.querySelector(".login-form");
 
 if (loginForm) {
     loginForm.addEventListener("submit", (e) => {
-        e.preventDefault(); // Evita recarga instantánea del navegador
+        e.preventDefault();
         
         const correoInput = loginForm.querySelector('input[type="email"]').value.trim();
         const contrasenaInput = loginForm.querySelector('input[type="password"]').value;
@@ -129,21 +129,18 @@ if (loginForm) {
         })
         .then(res => res.json())
         .then(data => {
-            // Busca esta sección exacta dentro del bloque .then(data => { ... }) de tu main.js:
+            if (data.status === "success") {
+                // Guardamos los datos de sesión devueltos automáticamente por la DB
+                localStorage.setItem("userRole", data.rol.toLowerCase()); 
+                localStorage.setItem("userName", data.nombre);
 
-if (data.status === "success") {
-    localStorage.setItem("userRole", data.rol.toLowerCase()); 
-    localStorage.setItem("userName", data.nombre);
+                alert(`¡Bienvenido, ${data.nombre}!`);
 
-    alert(`¡Bienvenido, ${data.nombre}!`);
-
-    // CORRECCIÓN DE RUTAS: Usamos './' para forzar la ruta relativa en subcarpetas de Live Server
-    if (data.rol.toLowerCase() === "admin") {
-        window.location.replace("./analicomponentes.html");
-    } else {
-        window.location.replace("./telemetria.html");
-    }
-}
+                // Ambos roles pueden entrar a telemetria, el script ocultará el resto
+                window.location.replace("./telemetria.html");
+            } else {
+                alert(data.message || "Credenciales incorrectas.");
+            }
         })
         .catch(err => {
             console.error("Error en la conexión:", err);
@@ -154,12 +151,56 @@ if (data.status === "success") {
     });
 }
 
-// VALIDACIÓN DE PRIVILEGIOS AL CARGAR LA PÁGINA
-const currentRole = localStorage.getItem("userRole");
-if (currentRole && currentRole !== "admin") {
-    document.querySelectorAll('[data-role="admin"]').forEach(boton => {
-        if (boton && boton.parentElement) {
-            boton.parentElement.remove();
+// =========================================================================
+// CONTROL DE VISIBILIDAD DE MENÚS, RUTA ACTIVA Y PROTECCIÓN DE RUTAS
+// =========================================================================
+document.addEventListener("DOMContentLoaded", () => {
+    const currentRole = localStorage.getItem("userRole");
+    const path = window.location.pathname;
+
+    // 1. PROTECCIÓN DE RUTAS
+    // Si no hay rol y no está en la raíz o en el index (login), redirigir
+    if (!currentRole && !path.endsWith("index.html") && path !== "/") {
+        window.location.replace("./index.html");
+        return;
+    }
+
+    // 2. RESTRICCIÓN DE ROLES
+    // Si el usuario es un operador común ("user"), removemos las secciones de administrador
+    if (currentRole === "user") {
+        document.querySelectorAll('[data-role="admin"]').forEach(elemento => {
+            if (elemento) {
+                elemento.remove(); 
+            }
+        });
+    }
+
+   // 3. DETECCIÓN AUTOMÁTICA DE LA PÁGINA ACTIVA (Versión Ultra-Robusta)
+    const menuLinks = document.querySelectorAll('.sidebar-nav .nav-item');
+    
+    // Obtenemos solo el nombre del archivo actual (ej: "produccion.html")
+    const currentPage = path.split('/').pop(); 
+
+    menuLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        // Extraemos también el nombre del archivo del atributo href
+        const targetPage = href ? href.split('/').pop() : '';
+        
+        // Comparamos de forma exacta o mediante inclusión para entornos locales
+        if (targetPage && (currentPage === targetPage || path.includes(targetPage))) {
+            link.classList.add('active'); // Se pinta de azul automáticamente
+        } else {
+            link.classList.remove('active'); // Limpia los demás
         }
     });
-}
+
+    // 4. CONFIGURACIÓN DEL BOTÓN DE CERRAR SESIÓN
+    const logoutBtn = document.getElementById("btn-logout");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            localStorage.clear(); // Limpia los datos de sesión
+            window.location.replace("./index.html");
+        });
+    }
+});
