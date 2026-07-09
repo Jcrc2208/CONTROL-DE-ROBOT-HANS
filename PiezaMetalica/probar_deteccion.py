@@ -3,7 +3,6 @@ from ultralytics import YOLO
 
 path_modelo = r"C:\Users\polic\OneDrive\Escritorio\Trabajo\CONTROL-DE-ROBOT-HANS\PiezaMetalica\best.pt"
 model = YOLO(path_modelo)
-
 cap = cv2.VideoCapture(0)
 
 if not cap.isOpened():

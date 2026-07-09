@@ -12,7 +12,7 @@ cps = CPSClient()
 GAIN = 0.05
 FACTOR_FLEX = 0.7 
 DEAD_ZONE = 25
-AREA_SEGURIDAD = 25000
+AREA_SEGURIDAD = 25000 
 AREA_AGARRE = 15000
 ALPHA = 0.3 # Filtro EMA: 0.1 (muy suave/lento) a 0.9 (rápido/ruidoso)
 
