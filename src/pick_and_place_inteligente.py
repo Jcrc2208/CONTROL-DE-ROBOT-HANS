@@ -6,14 +6,13 @@ IP = '192.168.10.11'
 PORT = 10003
 cps = CPSClient()
 GID = 2
-result = []
+#result = []
 # COORDENADAS DEFINIDAS
 PICK = [417.884, 227.981, 161.745, 177.171, 3.110, -154.484]
 PLACE = [400.792, -228.182, 159.280, 176.366, 0.552, 162.710]
 TRASLACION_SEGURA_1 = [386.760, 213.830, 412.385, 176.867, 8.911,-154.484]
 TRASLACION_SEGURA_2 = [384.299, -158.737, 333.606, -179.087, 1.793, 158.107]
 ORIENTATION = [27.859, -7.479, 107.514, 1.919, 62.763, 0.412] 
-
 
 #lo siguiente seria integran los algoritmos de inteligencia artificial para la detección de objetos y la planificación de trayectorias, pero por ahora se mantiene la secuencia básica de pick and place con el gripper.
 def inicializar():
