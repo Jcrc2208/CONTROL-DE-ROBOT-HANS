@@ -14,6 +14,3 @@ model = YOLO(path_modelo)
 cap = cv2.VideoCapture(0)
 
 #definicon de algroitmo de deteccion de objetos
-
-
-
