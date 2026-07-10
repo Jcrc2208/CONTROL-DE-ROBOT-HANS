@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from flask_socketio import SocketIO, emit  # <-- NUEVO: Para el manejo de WebSockets en tiempo real
+from flask_socketio import SocketIO, emit  #Para el manejo de WebSockets en tiempo real
 from datetime import datetime, timezone  
 from robot_manager import RobotHuayanManager
 
@@ -229,3 +229,4 @@ if __name__ == '__main__':
     print("Servidor híbrido (HTTP + WebSockets) corriendo en http://0.0.0.0:5000")
     # IMPORTANTE: Cambiamos app.run() por socketio.run() para dar soporte al motor asíncrono
     socketio.run(app, host='0.0.0.0', port=5000, debug=False)
+    

@@ -156,13 +156,25 @@ if (loginForm) {
 // =========================================================================
 document.addEventListener("DOMContentLoaded", () => {
     const currentRole = localStorage.getItem("userRole");
-    const path = window.location.pathname;
+    const path = window.location.pathname.toLowerCase(); // Convertimos a minúsculas para evitar fallos de tipeo
 
-    // 1. PROTECCIÓN DE RUTAS
-    // Si no hay rol y no está en la raíz o en el index (login), redirigir
-    if (!currentRole && !path.endsWith("index.html") && path !== "/") {
-        window.location.replace("./index.html");
-        return;
+    // 1. PROTECCIÓN DE RUTAS (Mejorada)
+    // Validamos si la página actual es el login (index o raíz)
+    const isLoginPage = path.endsWith("index.html") || path === "/" || path.endsWith("/");
+
+    if (!currentRole) {
+        // Si NO hay rol y NO estamos en el login, entonces sí redirigimos al login
+        if (!isLoginPage) {
+            console.warn("Acceso denegado: No se encontró un rol de usuario.");
+            window.location.replace("./index.html");
+            return;
+        }
+    } else {
+        // Si SÍ hay un rol activo pero el usuario intenta entrar al login, lo mandamos a telemetría
+        if (isLoginPage) {
+            window.location.replace("./telemetria.html");
+            return;
+        }
     }
 
     // 2. RESTRICCIÓN DE ROLES
@@ -175,22 +187,18 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-   // 3. DETECCIÓN AUTOMÁTICA DE LA PÁGINA ACTIVA (Versión Ultra-Robusta)
+   // 3. DETECCIÓN AUTOMÁTICA DE LA PÁGINA ACTIVA
     const menuLinks = document.querySelectorAll('.sidebar-nav .nav-item');
-    
-    // Obtenemos solo el nombre del archivo actual (ej: "produccion.html")
     const currentPage = path.split('/').pop(); 
 
     menuLinks.forEach(link => {
         const href = link.getAttribute('href');
-        // Extraemos también el nombre del archivo del atributo href
-        const targetPage = href ? href.split('/').pop() : '';
+        const targetPage = href ? href.split('/').pop().toLowerCase() : '';
         
-        // Comparamos de forma exacta o mediante inclusión para entornos locales
         if (targetPage && (currentPage === targetPage || path.includes(targetPage))) {
-            link.classList.add('active'); // Se pinta de azul automáticamente
+            link.classList.add('active'); 
         } else {
-            link.classList.remove('active'); // Limpia los demás
+            link.classList.remove('active'); 
         }
     });
 
@@ -199,8 +207,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (logoutBtn) {
         logoutBtn.addEventListener("click", (e) => {
             e.preventDefault();
-            localStorage.clear(); // Limpia los datos de sesión
+            localStorage.clear(); // Limpia por completo el rol y nombre
             window.location.replace("./index.html");
         });
     }
 });
+
