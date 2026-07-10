@@ -10,8 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // =========================================================
     // ACCIÓN 1: Control de apertura y cierre del Modal Emergente
     // =========================================================
-    btnAddUser.addEventListener("click", () => userModal.style.display = "flex");
-    btnCloseModal.addEventListener("click", () => userModal.style.display = "none");
+    if(btnAddUser) btnAddUser.addEventListener("click", () => userModal.style.display = "flex");
+    if(btnCloseModal) btnCloseModal.addEventListener("click", () => userModal.style.display = "none");
 
     // =========================================================
     // ACCIÓN 2: Cargar y renderizar usuarios reales de SQLite
@@ -21,12 +21,9 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(res => res.json())
             .then(data => {
                 if (data.status === "success") {
-                    // Limpiar las filas estáticas de muestra del HTML
                     tableBody.innerHTML = ""; 
 
-                    // Iterar sobre cada usuario de la BD e inyectar la fila
                     data.usuarios.forEach(usuario => {
-                        // Determinar la clase CSS del tag de rol según corresponda
                         const rolClass = usuario.rol.toLowerCase() === 'admin' ? 'admin' : 'operator';
                         const rolTexto = usuario.rol.toLowerCase() === 'admin' ? 'Administrador' : 'Operador';
 
@@ -59,40 +56,85 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(err => console.error("Error en la petición GET:", err));
     }
 
-    // Ejecutar la carga automática al entrar a la pantalla
+    // Ejecutar la carga automática al entrar
     cargarUsuarios();
 
     // =========================================================
-    // ACCIÓN 3: Interceptar formulario y enviar POST a Flask
+    // ACCIÓN 3: Interceptación de formulario (POST)
     // =========================================================
-    addUserForm.addEventListener("submit", (e) => {
-        e.preventDefault(); 
+    if(addUserForm) {
+        addUserForm.addEventListener("submit", (e) => {
+            e.preventDefault(); 
+            const nuevoUsuario = {
+                nombre: document.getElementById("modal-nombre").value,
+                correo: document.getElementById("modal-correo").value,
+                password: document.getElementById("modal-password").value,
+                rol: document.getElementById("modal-rol").value
+            };
 
-        const nuevoUsuario = {
-            nombre: document.getElementById("modal-nombre").value,
-            correo: document.getElementById("modal-correo").value,
-            password: document.getElementById("modal-password").value,
-            rol: document.getElementById("modal-rol").value
-        };
+            fetch(URL_BASE, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(nuevoUsuario)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === "success") {
+                    alert("Usuario guardado exitosamente en SQLite");
+                    userModal.style.display = "none";
+                    addUserForm.reset();
+                    cargarUsuarios();
+                } else {
+                    alert("Error del servidor: " + data.message);
+                }
+            })
+            .catch(err => console.error("Error en la petición POST:", err));
+        });
+    }
 
-        fetch(URL_BASE, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(nuevoUsuario)
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === "success") {
-                alert("Usuario guardado exitosamente en SQLite");
-                userModal.style.display = "none";
-                addUserForm.reset();
-                cargarUsuarios(); // Recarga la tabla de inmediato sin refrescar toda la página
-            } else {
-                alert("Error del servidor: " + data.message);
+    // =========================================================
+    // ACCIÓN 4: Dar de baja con Efecto de Animación CSS/JS
+    // =========================================================
+    if(tableBody) {
+        tableBody.addEventListener("click", (e) => {
+            const botonEliminar = e.target.closest(".delete-user-btn");
+            
+            if (botonEliminar) {
+                const usuarioId = botonEliminar.dataset.id;
+                const filaObjetivo = document.getElementById(`user-${usuarioId}`);
+                
+                if (confirm(`¿Estás seguro de que deseas dar de baja al usuario con ID #${usuarioId}?`)) {
+                    
+                    fetch(`${URL_BASE}/${usuarioId}`, {
+                        method: "DELETE",
+                        headers: { "Content-Type": "application/json" }
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.status === "success") {
+                            // SI HAY ANIMACIÓN: Desvanecido gradual antes de limpiar del DOM
+                            if (filaObjetivo) {
+                                filaObjetivo.style.transition = "all 0.4s ease";
+                                filaObjetivo.style.opacity = "0";
+                                filaObjetivo.style.transform = "translateX(20px)";
+                                
+                                // Esperar a que la transición termine para refrescar la tabla limpia
+                                setTimeout(() => {
+                                    cargarUsuarios();
+                                }, 400);
+                            } else {
+                                cargarUsuarios();
+                            }
+                        } else {
+                            alert("Error del servidor: " + data.message);
+                        }
+                    })
+                    .catch(err => {
+                        console.error("Error en la petición DELETE:", err);
+                        alert("No se pudo conectar con el servidor.");
+                    });
+                }
             }
-        })
-        .catch(err => console.error("Error en la petición POST:", err));
-    });
+        });
+    }
 });
