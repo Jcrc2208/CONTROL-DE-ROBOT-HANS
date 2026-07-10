@@ -156,6 +156,25 @@ def obtener_usuarios():
         return jsonify({"status": "success", "usuarios": lista_usuarios}), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
+    
+@app.route('/api/usuarios/<int:id>', methods=['DELETE'])
+def dar_de_baja_usuario(id):
+    try:
+        # Buscar el usuario por su ID único en SQLite
+        usuario = Usuario.query.get(id)
+        
+        if not usuario:
+            return jsonify({"status": "error", "message": "El usuario no existe."}), 404
+            
+        # Eliminar el registro de la base de datos
+        db.session.delete(usuario)
+        db.session.commit()
+        
+        return jsonify({"status": "success", "message": "Usuario dado de baja correctamente."}), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"status": "error", "message": str(e)}), 500
 
 @app.route('/api/login', methods=['POST', 'OPTIONS'])
 def login():
