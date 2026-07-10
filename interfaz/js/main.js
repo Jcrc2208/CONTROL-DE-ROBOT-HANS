@@ -112,7 +112,7 @@ const loginForm = document.querySelector(".login-form");
 
 if (loginForm) {
     loginForm.addEventListener("submit", (e) => {
-        e.preventDefault(); // Evita recarga instantánea del navegador
+        e.preventDefault();
         
         const correoInput = loginForm.querySelector('input[type="email"]').value.trim();
         const contrasenaInput = loginForm.querySelector('input[type="password"]').value;
@@ -129,21 +129,18 @@ if (loginForm) {
         })
         .then(res => res.json())
         .then(data => {
-            // Busca esta sección exacta dentro del bloque .then(data => { ... }) de tu main.js:
+            if (data.status === "success") {
+                // Guardamos los datos de sesión devueltos automáticamente por la DB
+                localStorage.setItem("userRole", data.rol.toLowerCase()); 
+                localStorage.setItem("userName", data.nombre);
 
-if (data.status === "success") {
-    localStorage.setItem("userRole", data.rol.toLowerCase()); 
-    localStorage.setItem("userName", data.nombre);
+                alert(`¡Bienvenido, ${data.nombre}!`);
 
-    alert(`¡Bienvenido, ${data.nombre}!`);
-
-    // CORRECCIÓN DE RUTAS: Usamos './' para forzar la ruta relativa en subcarpetas de Live Server
-    if (data.rol.toLowerCase() === "admin") {
-        window.location.replace("./analicomponentes.html");
-    } else {
-        window.location.replace("./telemetria.html");
-    }
-}
+                // Ambos roles pueden entrar a telemetria, el script ocultará el resto
+                window.location.replace("./telemetria.html");
+            } else {
+                alert(data.message || "Credenciales incorrectas.");
+            }
         })
         .catch(err => {
             console.error("Error en la conexión:", err);
@@ -154,12 +151,65 @@ if (data.status === "success") {
     });
 }
 
-// VALIDACIÓN DE PRIVILEGIOS AL CARGAR LA PÁGINA
-const currentRole = localStorage.getItem("userRole");
-if (currentRole && currentRole !== "admin") {
-    document.querySelectorAll('[data-role="admin"]').forEach(boton => {
-        if (boton && boton.parentElement) {
-            boton.parentElement.remove();
+// =========================================================================
+// CONTROL DE VISIBILIDAD DE MENÚS, RUTA ACTIVA Y PROTECCIÓN DE RUTAS
+// =========================================================================
+document.addEventListener("DOMContentLoaded", () => {
+    const currentRole = localStorage.getItem("userRole");
+    const path = window.location.pathname.toLowerCase(); // Convertimos a minúsculas para evitar fallos de tipeo
+
+    // 1. PROTECCIÓN DE RUTAS (Mejorada)
+    // Validamos si la página actual es el login (index o raíz)
+    const isLoginPage = path.endsWith("index.html") || path === "/" || path.endsWith("/");
+
+    if (!currentRole) {
+        // Si NO hay rol y NO estamos en el login, entonces sí redirigimos al login
+        if (!isLoginPage) {
+            console.warn("Acceso denegado: No se encontró un rol de usuario.");
+            window.location.replace("./index.html");
+            return;
+        }
+    } else {
+        // Si SÍ hay un rol activo pero el usuario intenta entrar al login, lo mandamos a telemetría
+        if (isLoginPage) {
+            window.location.replace("./telemetria.html");
+            return;
+        }
+    }
+
+    // 2. RESTRICCIÓN DE ROLES
+    // Si el usuario es un operador común ("user"), removemos las secciones de administrador
+    if (currentRole === "user") {
+        document.querySelectorAll('[data-role="admin"]').forEach(elemento => {
+            if (elemento) {
+                elemento.remove(); 
+            }
+        });
+    }
+
+   // 3. DETECCIÓN AUTOMÁTICA DE LA PÁGINA ACTIVA
+    const menuLinks = document.querySelectorAll('.sidebar-nav .nav-item');
+    const currentPage = path.split('/').pop(); 
+
+    menuLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        const targetPage = href ? href.split('/').pop().toLowerCase() : '';
+        
+        if (targetPage && (currentPage === targetPage || path.includes(targetPage))) {
+            link.classList.add('active'); 
+        } else {
+            link.classList.remove('active'); 
         }
     });
-}
+
+    // 4. CONFIGURACIÓN DEL BOTÓN DE CERRAR SESIÓN
+    const logoutBtn = document.getElementById("btn-logout");
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            localStorage.clear(); // Limpia por completo el rol y nombre
+            window.location.replace("./index.html");
+        });
+    }
+});
+

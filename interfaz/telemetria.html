@@ -21,33 +21,39 @@
         </div>
 
         <nav class="sidebar-nav">
-            <ul>
-                <li>
-                    <a href="telemetria.html" class="nav-item active">
-                        <i class="fa-solid fa-chart-line"></i>
-                        Telemetría
-                    </a>
-                </li>
-                <li>
-                    <a href="analicomponentes.html" class="nav-item">
-                        <i class="fa-solid fa-brain"></i>
-                        Análisis Predictivo
-                    </a>
-                </li>
-                <li>
-                    <a href="controUsers.html" class="nav-item">
-                        <i class="fa-solid fa-users"></i>
-                        Usuarios
-                    </a>
-                </li>
-                <li>
-                    <a href="index.html" class="logout-btn">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        Cerrar Sesión
-                    </a>
-                </li>
-            </ul>
-        </nav>
+    <ul>
+        <li>
+            <a href="telemetria.html" class="nav-item active">
+                <i class="fa-solid fa-chart-line"></i>Telemetría
+            </a>
+        </li> 
+        <li data-role="admin">
+            <a href="analicomponentes.html" class="nav-item">
+                <i class="fa-solid fa-brain"></i>Análisis Predictivo
+            </a>
+        </li>
+        <li>
+            <a href="mov.html" class="nav-item">
+                <i class="fa-solid fa-gears"></i>Programación
+            </a>
+        </li>
+        <li data-role="admin">
+            <a href="produccion.html" class="nav-item">
+                <i class="fa-solid fa-industry"></i>Producción
+            </a>
+        </li>
+        <li data-role="admin">
+            <a href="controUsers.html" class="nav-item">
+                <i class="fa-solid fa-users"></i>Usuarios
+            </a>
+        </li>
+        <li>
+            <a href="index.html" class="logout-btn" id="btn-logout">
+                <i class="fa-solid fa-right-from-bracket"></i>Cerrar Sesión
+            </a>
+        </li>
+    </ul>
+</nav>
     </aside>
 
     <main class="dashboard-content">
@@ -94,74 +100,55 @@
                 <div id="joint-j1">
                     J1 
                     <span>
-                        <button class="btn-jog" data-joint="0" data-dir="-1">-</button>
+                        <button data-role="admin" class="btn-jog" data-joint="0" data-dir="-1">-</button>
                         <span id="val-j1" class="val-j">0.0°</span>
-                        <button class="btn-jog" data-joint="0" data-dir="1">+</button>
+                        <button data-role="admin" class="btn-jog" data-joint="0" data-dir="1">+</button>
                     </span>
                 </div>
 
                 <div id="joint-j2">
                     J2 
                     <span>
-                        <button class="btn-jog" data-joint="1" data-dir="-1">-</button>
+                        <button data-role="admin" class="btn-jog" data-joint="1" data-dir="-1">-</button>
                         <span id="val-j2" class="val-j">0.0°</span>
-                        <button class="btn-jog" data-joint="1" data-dir="1">+</button>
+                        <button data-role="admin" class="btn-jog" data-joint="1" data-dir="1">+</button>
                     </span>
                 </div>
 
                 <div id="joint-j3">
                     J3 
                     <span>
-                        <button class="btn-jog" data-joint="2" data-dir="-1">-</button>
+                        <button data-role="admin" class="btn-jog" data-joint="2" data-dir="-1">-</button>
                         <span id="val-j3" class="val-j">0.0°</span>
-                        <button class="btn-jog" data-joint="2" data-dir="1">+</button>
+                        <button data-role="admin" class="btn-jog" data-joint="2" data-dir="1">+</button>
                     </span>
                 </div>
 
                 <div id="joint-j4">
                     J4 
                     <span>
-                        <button class="btn-jog" data-joint="3" data-dir="-1">-</button>
+                        <button data-role="admin" class="btn-jog" data-joint="3" data-dir="-1">-</button>
                         <span id="val-j4" class="val-j">0.0°</span>
-                        <button class="btn-jog" data-joint="3" data-dir="1">+</button>
+                        <button data-role="admin" class="btn-jog" data-joint="3" data-dir="1">+</button>
                     </span>
                 </div>
 
                 <div id="joint-j5">
                     J5
                     <span>
-                        <button class="btn-jog" data-joint="4" data-dir="-1">-</button>
+                        <button data-role="admin" class="btn-jog" data-joint="4" data-dir="-1">-</button>
                         <span id="val-j5" class="val-j">0.0°</span>
-                        <button class="btn-jog" data-joint="4" data-dir="1">+</button>
+                        <button data-role="admin" class="btn-jog" data-joint="4" data-dir="1">+</button>
                     </span>
                 </div>
 
                 <div id="joint-j6">
                     J6 
                     <span>
-                        <button class="btn-jog" data-joint="5" data-dir="-1">-</button>
+                        <button data-role="admin" class="btn-jog" data-joint="5" data-dir="-1">-</button>
                         <span id="val-j6" class="val-j">0.0°</span>
-                        <button class="btn-jog" data-joint="5" data-dir="1">+</button>
+                        <button data-role="admin" class="btn-jog" data-joint="5" data-dir="1">+</button>
                     </span>
-                </div>
-            </div>
-
-            <div class="speed-control-block">
-                <h3>Control de Velocidad</h3>
-
-                <div class="speed-slider-container">
-                    <label for="speed-slider">
-                        Velocidad:
-                        <span id="speed-value">50%</span>
-                    </label>
-
-                    <input 
-                        type="range" 
-                        id="speed-slider" 
-                        min="0" 
-                        max="100" 
-                        value="50"
-                    >
                 </div>
             </div>
 
@@ -173,6 +160,7 @@
 
 </div> 
 
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 <script src="js/main.js"></script>
 <script src="js/telemetria.js"></script>
 
