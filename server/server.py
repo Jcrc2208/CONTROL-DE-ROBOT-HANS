@@ -4,12 +4,14 @@ from werkzeug.security import generate_password_hash
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-from flask_socketio import SocketIO, emit  #Para el manejo de WebSockets en tiempo real
+from flask_socketio import SocketIO, emit  # Para el manejo de WebSockets en tiempo real
 from datetime import datetime, timezone  
 from robot_manager import RobotHuayanManager
 
-app = Flask(__name__)
+# MODIFICACIÓN: Configurar Flask para que use la carpeta 'interfaz' como contenedora de estáticos
+app = Flask(__name__, static_folder='../interfaz', static_url_path='/')
 CORS(app)  
+robot_en_automatico = False
 
 # Configuración de la base de datos
 # Esto creará la base de datos en la carpeta de tu usuario de Windows, 100% fuera de tu proyecto
@@ -57,6 +59,15 @@ class EstadoTermicoElectrico(db.Model):
     temp_j4 = db.Column(db.Float); temp_j5 = db.Column(db.Float); temp_j6 = db.Column(db.Float)
     corriente_j1 = db.Column(db.Float); corriente_j2 = db.Column(db.Float); corriente_j3 = db.Column(db.Float)
     corriente_j4 = db.Column(db.Float); corriente_j5 = db.Column(db.Float); corriente_j6 = db.Column(db.Float)
+
+# =========================================================================
+# RUTAS PARA SERVIR LA INTERFAZ WEB (Frontend integrado)
+# =========================================================================
+
+@app.route('/')
+def index():
+    """ Sirve de forma automática el archivo index.html del frontend """
+    return app.send_static_file('index.html')
 
 # =========================================================================
 # TAREA EN SEGUNDO PLANO: EMISIÓN DE TELEMETRÍA Y ALMACENAMIENTO EN BD
@@ -199,7 +210,16 @@ def login():
 # =========================================================================
 @socketio.on('jog_start')
 def handle_jog_start(data):
-    """ Escucha el evento para iniciar el movimiento del robot por WebSocket """
+    """ Escucha el evento para iniciar el movimiento manual por WebSocket """
+    global robot_en_automatico
+    
+    # ¡BLOQUEO DE SEGURIDAD!
+    # Si el robot está corriendo el pick & place, ignoramos el click de la interfaz
+    if robot_en_automatico:
+        print("[WS BLOCKED] Intento de Jog manual rechazado: El robot está ejecutando una rutina automática.")
+        emit('jog_response', {"status": "blocked", "message": "Robot ocupado en modo automático."})
+        return
+
     try:
         joint = int(data.get('joint', 0))
         direction_input = int(data.get('direction', 1)) 
