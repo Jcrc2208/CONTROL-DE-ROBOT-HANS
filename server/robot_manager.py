@@ -170,9 +170,6 @@ class RobotHuayanManager:
             return -1
 
     def configurar_velocidad(self, porcentaje_velocidad):
-        """
-        Cambia la velocidad global (Override) de 0 a 100.
-        """
         try:
             if hasattr(self.sdk, 'HRIF_SetOverride'):
                 # Aseguramos límites por seguridad física
