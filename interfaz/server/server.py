@@ -11,7 +11,7 @@ app = Flask(__name__)
 CORS(app)  
 
 # Configuración de la base de datos
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///robot_monitoreo.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../robot_monitoreo.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
