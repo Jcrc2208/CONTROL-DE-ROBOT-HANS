@@ -1,3 +1,4 @@
+import os
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash 
 from flask import Flask, jsonify, request
@@ -11,6 +12,8 @@ app = Flask(__name__)
 CORS(app)  
 
 # Configuración de la base de datos
+# Esto creará la base de datos en la carpeta de tu usuario de Windows, 100% fuera de tu proyecto
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(os.path.expanduser('~'), 'robot_monitoreo.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../robot_monitoreo.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -161,10 +164,12 @@ def login():
     try:
         data = request.get_json()
         usuario = Usuario.query.filter_by(correo=data.get('correo')).first()
+        
+        # Validación de login exacta con minúsculas del rol para tu frontend
         if usuario and check_password_hash(usuario.password_hash, data.get('password')):
             usuario.ultima_conexion = datetime.now(timezone.utc)
             db.session.commit()
-            return jsonify({"status": "success", "nombre": usuario.nombre, "rol": usuario.rol}), 200
+            return jsonify({"status": "success", "nombre": usuario.nombre, "rol": usuario.rol.lower()}), 200
         return jsonify({"status": "error", "message": "Credenciales inválidas."}), 401
     except Exception as e:
         db.session.rollback()  
@@ -222,6 +227,27 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
         print("Base de datos y tablas inicializadas correctamente.")
+        
+        # PRECARGA DE USUARIOS POR DEFECTO (Admin y User)
+        usuarios_defecto = [
+            {"nombre": "Administrador", "correo": "admin@gmail.com", "password": "admin", "rol": "admin"},
+            {"nombre": "Operador Común", "correo": "user@gmail.com", "password": "user", "rol": "user"}
+        ]
+        
+        for u_data in usuarios_defecto:
+            existe = Usuario.query.filter_by(correo=u_data["correo"]).first()
+            if not existe:
+                hash_pw = generate_password_hash(u_data["password"])
+                nuevo_u = Usuario(
+                    nombre=u_data["nombre"],
+                    correo=u_data["correo"],
+                    password_hash=hash_pw,
+                    rol=u_data["rol"]
+                )
+                db.session.add(nuevo_u)
+                print(f"Usuario por defecto creado: {u_data['correo']}")
+        
+        db.session.commit()
     
     # Iniciar la tarea de telemetría asíncrona en el fondo
     socketio.start_background_task(emitir_telemetria_continua)
@@ -229,4 +255,3 @@ if __name__ == '__main__':
     print("Servidor híbrido (HTTP + WebSockets) corriendo en http://0.0.0.0:5000")
     # IMPORTANTE: Cambiamos app.run() por socketio.run() para dar soporte al motor asíncrono
     socketio.run(app, host='0.0.0.0', port=5000, debug=False)
-    
