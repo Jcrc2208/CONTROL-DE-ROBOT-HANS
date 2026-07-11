@@ -117,8 +117,10 @@ if (loginForm) {
         const correoInput = loginForm.querySelector('input[type="email"]').value.trim();
         const contrasenaInput = loginForm.querySelector('input[type="password"]').value;
 
-        fetch("http://localhost:5000/api/login", {
+     // fetch("http://localhost:5000/api/login", {
+        fetch("/api/login", {
             method: "POST",
+
             headers: {
                 "Content-Type": "application/json"
             },

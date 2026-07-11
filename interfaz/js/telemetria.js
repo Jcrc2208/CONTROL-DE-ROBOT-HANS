@@ -1,8 +1,10 @@
 // =========================================================================
 // 1. INICIALIZACIÓN DE SOCKET.IO Y TELEMETRÍA UNIFICADA
 // =========================================================================
-const URL_BASE = "http://localhost:5000"; 
-const socket = io(URL_BASE); 
+
+//const URL_BASE = "http://localhost:5000"; 
+const socket = io(); // Conexión al mismo host y puerto del servidor que sirve la página
+//const socket = io(URL_BASE); 
 
 // Confirmación de conexión en la consola
 socket.on("connect", () => {

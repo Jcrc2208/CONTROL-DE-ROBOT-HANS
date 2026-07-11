@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const URL_BASE = "http://localhost:5000/api/usuarios";
-    
+    const URL_BASE = "/api/usuarios";
+    // const URL_BASE = "http://localhost:5000/api/usuarios";
+
     const btnAddUser = document.getElementById("btn-add-user");
     const userModal = document.getElementById("user-modal");
     const btnCloseModal = document.getElementById("btn-close-modal");

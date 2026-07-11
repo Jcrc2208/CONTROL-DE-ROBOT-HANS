@@ -3,8 +3,9 @@
 // =========================================================================
 document.addEventListener("DOMContentLoaded", () => {
     // 1. Conexión al servidor WebSocket (Reutiliza la misma URL base de tu backend)
-    const URL_BASE = "http://localhost:5000"; 
-    const socket = io(URL_BASE); 
+    //const URL_BASE = "http://localhost:5000"; 
+    //const socket = io(URL_BASE); 
+    const socket = io(); // Conexión al mismo host y puerto del servidor que sirve la página
 
     console.log("Módulo de Análisis Predictivo inicializado. Esperando flujo de telemetría...");
 
