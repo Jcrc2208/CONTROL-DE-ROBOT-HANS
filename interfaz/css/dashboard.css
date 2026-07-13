@@ -936,3 +936,59 @@
     background-color: #fef2f2;
     color: #dc2626;
 }
+
+/* --- aqui inician mis ajustes solo modificar el de telemtria que aun necesita un ajuste mas fino  --- */
+
+/* --- RESPONSIVE FINAL PARA DASHBOARD DE TELEMETRÍA --- */
+@media (max-width: 850px) {
+    /* 1. Cambiamos el contenedor principal a columna */
+    .dashboard-container {
+        flex-direction: column;
+        height: auto; /* Permite scroll vertical */
+        overflow: visible;
+    }
+
+    /* 2. Barra lateral: la ponemos arriba como menú horizontal o la ocultamos */
+    .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 15px;
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .sidebar-nav ul {
+        flex-direction: row; /* Menú horizontal en móvil */
+        overflow-x: auto;
+        gap: 15px;
+    }
+    .logout-btn { margin-top: 0; }
+
+    /* 3. Contenido principal: eliminamos el padding excesivo */
+    .dashboard-content {
+        padding: 15px;
+    }
+
+    /* 4. Grid de Telemetría: una sola columna */
+    .telemetry-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* 5. Área visual: reducimos tamaño para móvil */
+    #cobot-visual-area {
+        height: 250px;
+    }
+
+    /* 6. Producción KPI: apilamiento vertical */
+    .production-kpi-row {
+        flex-direction: column;
+    }
+
+    /* 7. Tablas: permitimos scroll horizontal para que no rompan la pantalla */
+    .table-container {
+        overflow-x: auto;
+        display: block;
+    }
+    .production-table {
+        min-width: 500px; /* se asegura que la tabla no se aplaste */
+    }
+}
