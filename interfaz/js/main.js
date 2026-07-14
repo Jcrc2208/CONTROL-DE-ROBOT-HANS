@@ -1,12 +1,13 @@
-// CONTROL DE TRASLACIÓN DE IMÁGENES Y TEXTOS SINCRO-SCROLL (SCROLLYTELLING)
+// CONTROL DE TRASLACIÓN DE IMÁGENES Y TEXTOS SINCRO-SCROLL (CORREGIDO - VERTICAL)
 if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
     gsap.registerPlugin(ScrollTrigger);
+
     const mainTimeline = gsap.timeline({
         scrollTrigger: {
             trigger: ".scrolly-container", 
-            start: "top top",              
-            end: "bottom bottom",          
-            scrub: 1,                      
+            start: "top top",          
+            end: "bottom bottom",      
+            scrub: 1,                  
         }
     });
 
@@ -19,18 +20,21 @@ if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
         const nextText = `#step-text-${i + 1}`;
 
         mainTimeline
-            .to(currentStep, { opacity: 0, y: -30, duration: 1, ease: "power2.out" }, "+=0.5")
-            .to(currentText, { opacity: 0, y: -30, duration: 1, ease: "power2.out" }, "<")
+            // 1. Salida completa del paso actual (Hacia ARRIBA -Y y desvanecido)
+            // Cambiamos 'x' por 'y'
+            .to(currentStep, { opacity: 0, y: -60, scale: 0.9, duration: 1, ease: "power1.inOut" })
+            .to(currentText, { opacity: 0, y: -40, duration: 1, ease: "power1.inOut" }, "<") // Salen juntos
             
+            // 2. Entrada del siguiente paso (Desde ABAJO +Y y desvanecido)
+            // Cambiamos 'x' por 'y'. Inicia en 60 (abajo) y va a 0 (su posición original)
             .fromTo(nextStep, 
-                { opacity: 0, y: 30, scale: 0.95 }, 
-                { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: "power3.out" }, 
-                "<"
+                { opacity: 0, y: 60, scale: 0.95 }, 
+                { opacity: 1, y: 0, scale: 1, duration: 1.2, ease: "power2.out" }
             )
             .fromTo(nextText, 
-                { opacity: 0, y: 30 }, 
-                { opacity: 1, y: 0, duration: 1, ease: "power3.out" }, 
-                "<"
+                { opacity: 0, y: 40 }, // Inicia un poco más abajo
+                { opacity: 1, y: 0, duration: 1.2, ease: "power2.out" },
+                "<" // Entran juntos
             );
     }
 }
