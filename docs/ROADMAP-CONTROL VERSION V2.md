@@ -224,6 +224,7 @@ Este módulo evolucionará conforme aumente la cantidad de información disponib
 ---
 
 
+
 Módulo Configuración
 
 Objetivo
@@ -244,6 +245,8 @@ Funcionalidades
 
 ---
 
+
+
 Arquitectura de Comunicación
 
 La plataforma evolucionará hacia una arquitectura basada en un Gateway Industrial que elimine la dependencia de introducir manualmente la dirección IP del controlador.
@@ -251,6 +254,8 @@ La plataforma evolucionará hacia una arquitectura basada en un Gateway Industri
 El Gateway será responsable de establecer la comunicación con el robot y exponer los servicios necesarios hacia Huayan Control Industrial mediante una interfaz segura.
 
 Se contempla la integración futura con tecnologías como VPN, túneles seguros y soluciones de acceso remoto administrado para facilitar el despliegue en diferentes instalaciones industriales sin modificar la experiencia del usuario final.
+
+
 
 ---
 
