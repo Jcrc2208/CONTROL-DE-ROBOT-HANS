@@ -12,6 +12,7 @@ La plataforma no busca limitarse a una aplicación específica, sino establecer 
 
 ---
 
+
 Módulo Dashboard
 
 Objetivo
@@ -30,6 +31,8 @@ Funcionalidades
 - Accesos rápidos hacia los módulos principales.
 
 Este módulo funcionará como el centro de operación de la plataforma.
+
+
 
 ---
 
@@ -55,6 +58,8 @@ Funcionalidades
 Este módulo permitirá visualizar en tiempo real la información necesaria para la supervisión del cobot.
 
 ---
+
+
 
 Módulo Control Manual
 
@@ -85,6 +90,8 @@ Este módulo reproducirá una experiencia similar a la pestaña Jog disponible e
 
 ---
 
+
+
 Módulo Free Drive
 
 Objetivo
@@ -105,57 +112,8 @@ El operador podrá mover manualmente el robot y registrar posiciones sin introdu
 
 ---
 
-Módulo Gestor de Puntos
 
-Objetivo
 
-Administrar todas las posiciones utilizadas dentro de las aplicaciones del robot.
-
-Funcionalidades
-
-- Crear puntos.
-- Editar puntos.
-- Eliminar puntos.
-- Duplicar puntos.
-- Organizar puntos por aplicación.
-- Visualizar coordenadas.
-- Exportar e importar configuraciones.
-
-Tipos de puntos soportados:
-
-- Home.
-- Pick.
-- Place.
-- Safe Point.
-- Offset Pick.
-- Offset Place.
-- Puntos personalizados.
-
----
-
-Módulo Aplicaciones
-
-Objetivo
-
-Crear aplicaciones industriales reutilizables.
-
-La primera aplicación será Pick & Place Inteligente.
-
-Funcionalidades
-
-- Selección del punto Pick.
-- Selección del punto Place.
-- Configuración del Offset en Z.
-- Configuración del Safe Point.
-- Configuración de velocidad.
-- Configuración de herramienta.
-- Generación automática de trayectorias.
-- Ejecución de la rutina.
-- Simulación previa.
-
-Las trayectorias deberán construirse automáticamente siguiendo buenas prácticas industriales, incorporando puntos de aproximación y puntos intermedios para minimizar riesgos de colisión.
-
----
 
 Módulo Supervisión Remota
 
@@ -179,6 +137,8 @@ Las operaciones que comprometan la seguridad del sistema, como la recuperación 
 
 ---
 
+
+
 Módulo Telemetría
 
 Objetivo
@@ -201,6 +161,8 @@ La información recopilada permitirá desarrollar herramientas avanzadas de aná
 
 ---
 
+
+
 Módulo Alarmas
 
 Objetivo
@@ -220,6 +182,8 @@ Funcionalidades
 
 ---
 
+
+
 Módulo Historial
 
 Objetivo
@@ -236,6 +200,8 @@ Funcionalidades
 - Exportación de registros.
 
 ---
+
+
 
 Módulo Inteligencia Artificial
 
@@ -256,6 +222,7 @@ Funcionalidades
 Este módulo evolucionará conforme aumente la cantidad de información disponible mediante la telemetría.
 
 ---
+
 
 Módulo Configuración
 
