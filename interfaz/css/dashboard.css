@@ -958,7 +958,6 @@
 }
 
 @media (max-width: 850px) {
-    /* 1. Contenedor principal sin flex-direction de columna para evitar romper el layout */
     .dashboard-container {
         position: relative;
         width: 100vw;
@@ -966,49 +965,10 @@
         overflow: hidden;
     }
 
-    /* 2. Botón Hamburguesa Estilizado en Móvil */
-    .hamburger-menu {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        width: 30px;
-        height: 21px;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        z-index: 1100; /* Por encima de la barra lateral */
-        padding: 0;
-    }
-
-    .hamburger-menu span {
-        width: 100%;
-        height: 3px;
-        background-color: #0f172a; /* Color de tus títulos */
-        border-radius: 3px;
-        transition: all 0.3s ease-in-out;
-    }
-
-    /* Animación de la hamburguesa transformándose en una "X" al abrirse */
-    .hamburger-menu.active span:nth-child(1) {
-        transform: translateY(9px) rotate(45deg);
-        background-color: #0052cc;
-    }
-    .hamburger-menu.active span:nth-child(2) {
-        opacity: 0;
-    }
-    .hamburger-menu.active span:nth-child(3) {
-        transform: translateY(-9px) rotate(-45deg);
-        background-color: #0052cc;
-    }
-
-    /* 3. Transformación de la Sidebar a Menú Ocultable */
     .sidebar {
         position: fixed;
         top: 0;
-        left: -100%; /* Completamente escondido a la izquierda */
+        left: -100%; 
         width: 280px;
         height: 100vh;
         box-shadow: 5px 0 25px rgba(15, 23, 42, 0.15);
@@ -1016,12 +976,10 @@
         z-index: 1000;
     }
 
-    /* Cuando se activa mediante JS */
     .sidebar.active {
         left: 0;
     }
 
-    /* Reajustamos la navegación interna para que vuelva a ser vertical */
     .sidebar-nav ul {
         flex-direction: column;
         gap: 8px;
@@ -1032,13 +990,11 @@
         margin-top: auto; 
     }
 
-    /* 4. Ajustes del Contenido Principal */
     .dashboard-content {
         width: 100%;
-        padding: 80px 20px 20px 20px; /* Padding superior extra para no tapar el botón */
+        padding: 80px 20px 20px 20px; 
     }
 
-    /* 5. Grid de Telemetría e información a una sola columna */
     .telemetry-grid {
         grid-template-columns: 1fr;
     }
@@ -1055,6 +1011,7 @@
         overflow-x: auto;
         display: block;
     }
+    
     .production-table {
         min-width: 500px;
     }
