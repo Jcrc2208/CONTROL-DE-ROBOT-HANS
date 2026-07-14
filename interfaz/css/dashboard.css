@@ -507,6 +507,7 @@
     flex-direction: column;
     gap: 18px;
 }
+}
 
 .config-group {
     display: flex;
@@ -732,20 +733,27 @@
     background-color: #fee2e2;
     color: #b91c1c;
 }
-}
+
 
 /* ==========================================================================
    Estilos Simples y Compactos para Botones y Control de Velocidad
    ========================================================================== */
 
-/* Contenedor de botones: asegura que queden en una sola fila y centrados */
-.cartesian-block div {
-    display: flex;
-    gap: 10px; /* Reducido el espacio entre botones */
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    margin-top: 8px;
+.cartesian-block div span,
+.joints-block div span {
+    font-family: 'Consolas', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0f172a;
+    background: #ffffff;
+    padding: 3px 8px;
+    border-radius: 6px;
+    min-width: 75px;
+    text-align: center;
+    
+    /* Agrega estas dos líneas */
+    display: inline-block; 
+    flex-shrink: 0; 
 }
 
 /* Botones de Comando más pequeños (Pick and Place / Detección) */
@@ -940,55 +948,114 @@
 /* --- aqui inician mis ajustes solo modificar el de telemtria que aun necesita un ajuste mas fino  --- */
 
 /* --- RESPONSIVE FINAL PARA DASHBOARD DE TELEMETRÍA --- */
+/* ==========================================================================
+   AJUSTES DE HAMBURGUESA Y RESPONSIVE PARA EL DASHBOARD
+   ========================================================================== */
+
+/* Botón Hamburguesa oculto por defecto en escritorio */
+.hamburger-menu {
+    display: none;
+}
+
 @media (max-width: 850px) {
-    /* 1. Cambiamos el contenedor principal a columna */
+    /* 1. Contenedor principal sin flex-direction de columna para evitar romper el layout */
     .dashboard-container {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* 2. Botón Hamburguesa Estilizado en Móvil */
+    .hamburger-menu {
+        display: flex;
         flex-direction: column;
-        height: auto; /* Permite scroll vertical */
-        overflow: visible;
+        justify-content: space-between;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 30px;
+        height: 21px;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        z-index: 1100; /* Por encima de la barra lateral */
+        padding: 0;
     }
 
-    /* 2. Barra lateral: la ponemos arriba como menú horizontal o la ocultamos */
-    .sidebar {
+    .hamburger-menu span {
         width: 100%;
-        height: auto;
-        padding: 15px;
-        border-right: none;
-        border-bottom: 1px solid #e2e8f0;
+        height: 3px;
+        background-color: #0f172a; /* Color de tus títulos */
+        border-radius: 3px;
+        transition: all 0.3s ease-in-out;
     }
+
+    /* Animación de la hamburguesa transformándose en una "X" al abrirse */
+    .hamburger-menu.active span:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+        background-color: #0052cc;
+    }
+    .hamburger-menu.active span:nth-child(2) {
+        opacity: 0;
+    }
+    .hamburger-menu.active span:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+        background-color: #0052cc;
+    }
+
+    /* 3. Transformación de la Sidebar a Menú Ocultable */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%; /* Completamente escondido a la izquierda */
+        width: 280px;
+        height: 100vh;
+        box-shadow: 5px 0 25px rgba(15, 23, 42, 0.15);
+        transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 1000;
+    }
+
+    /* Cuando se activa mediante JS */
+    .sidebar.active {
+        left: 0;
+    }
+
+    /* Reajustamos la navegación interna para que vuelva a ser vertical */
     .sidebar-nav ul {
-        flex-direction: row; /* Menú horizontal en móvil */
-        overflow-x: auto;
-        gap: 15px;
+        flex-direction: column;
+        gap: 8px;
+        overflow-x: visible;
     }
-    .logout-btn { margin-top: 0; }
 
-    /* 3. Contenido principal: eliminamos el padding excesivo */
+    .logout-btn { 
+        margin-top: auto; 
+    }
+
+    /* 4. Ajustes del Contenido Principal */
     .dashboard-content {
-        padding: 15px;
+        width: 100%;
+        padding: 80px 20px 20px 20px; /* Padding superior extra para no tapar el botón */
     }
 
-    /* 4. Grid de Telemetría: una sola columna */
+    /* 5. Grid de Telemetría e información a una sola columna */
     .telemetry-grid {
         grid-template-columns: 1fr;
     }
 
-    /* 5. Área visual: reducimos tamaño para móvil */
     #cobot-visual-area {
         height: 250px;
     }
 
-    /* 6. Producción KPI: apilamiento vertical */
     .production-kpi-row {
         flex-direction: column;
     }
 
-    /* 7. Tablas: permitimos scroll horizontal para que no rompan la pantalla */
     .table-container {
         overflow-x: auto;
         display: block;
     }
     .production-table {
-        min-width: 500px; /* se asegura que la tabla no se aplaste */
+        min-width: 500px;
     }
 }
