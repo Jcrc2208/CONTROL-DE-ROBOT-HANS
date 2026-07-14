@@ -215,3 +215,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+// =========================================================================
+// CONTROL DEL MENÚ DE HAMBURGUER (DASHBOARD RESPONSIVE)
+// =========================================================================
+const hamburgerBtn = document.getElementById('hamburger-btn');
+const sidebar = document.querySelector('.sidebar');
+const sidebarLinks = document.querySelectorAll('.sidebar-nav .nav-item, .logout-btn');
+
+if (hamburgerBtn && sidebar) {
+    // Abrir o cerrar al dar click en el botón
+    hamburgerBtn.addEventListener('click', () => {
+        hamburgerBtn.classList.toggle('active');
+        sidebar.classList.toggle('active');
+    });
+
+    // Cerrar el menú automáticamente al hacer click en cualquier opción de navegación
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            hamburgerBtn.classList.remove('active');
+            sidebar.classList.remove('remove'); // Asegura que se esconda
+            sidebar.classList.remove('active');
+        });
+    });
+}
