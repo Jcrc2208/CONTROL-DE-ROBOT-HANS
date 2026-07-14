@@ -137,7 +137,8 @@ body {
 #step-text-2, 
 #step-text-3, 
 #step-text-4 {
-    opacity: 0;
+    opacity: 1;
+    transform: none;
 }
 
 /*Estilos Tipográficos de los Paneles*/
@@ -317,38 +318,49 @@ body {
 
 /* --- ADAPTACIÓN RESPONSIVE PARA MÓVILES (version mejorada) --- */
 @media (max-width: 850px) {
-    /* 1. Ajuste del Header */
-    .main-header {
-        padding: 0 5%;
+    
+    /* 2. Botón Hamburguesa Estilizado en Móvil */
+    .hamburger-menu {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 32px;    /* Ajustado un poco el tamaño */
+        height: 22px;   /* Distancia perfecta para las 3 líneas */
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        z-index: 1100; /* Por encima de la barra lateral */
+        padding: 0;
+    }
+
+    /* --- ESTE BLOQUE CORRIGE LO INVISIBLE: Define las 3 líneas --- */
+    .hamburger-menu span {
+        display: block;
+        width: 100%;
+        height: 3px;
+        background-color: #0f172a; /* Color oscuro alineado a tus títulos */
+        border-radius: 3px;
+        transition: all 0.3s ease-in-out;
+        transform-origin: left center; /* Ayuda a que la rotación de la X sea perfecta */
+    }
+
+    /* Animación de la hamburguesa transformándose en una "X" al abrirse */
+    .hamburger-menu.active span:nth-child(1) {
+        transform: rotate(45deg) translate(2px, -2px);
+        background-color: #0052cc;
     }
     
-    /* 2. Ajuste del Scrollytelling (Stack vertical) */
-    .sticky-visual-viewer {
-        flex-direction: column; /* Apila imagen arriba, texto abajo */
-        height: auto;
+    .hamburger-menu.active span:nth-child(2) {
+        opacity: 0;
+        transform: scaleX(0); /* Hace desaparecer la línea del medio suavemente */
     }
-    .image-stack, .text-panels {
-        width: 100% !important; /* Ajuste de ancho según el tamaño de la pantalla */
-        height: 50vh;
-    }
-    .panel-card {
-        padding: 20px;
-        text-align: center;
-    }
-    .panel-card h2 { font-size: 1.8rem; }
-
-    /* 3. Ajuste del Login para una visualizacion mas profesional */
-    .login-layout {
-        flex-direction: column;
-        gap: 30px;
-        text-align: center;
-    }
-    .login-info {
-        width: 100% !important;
-    }
-    .login-info h2 { font-size: 2.2rem; }
-    .login-panel {
-        width: 95% !important; /* Ajuste para la  pantalla */
-        padding: 25px;
-    }
+    
+    .hamburger-menu.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(2px, 2px);
+        background-color: #0052cc;
+    }    
+    /* ... el resto de tu código @media (sidebar, etc.) se queda igual ... */
 }
