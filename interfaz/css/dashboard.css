@@ -982,13 +982,16 @@
     .production-kpi-row {
         flex-direction: column;
     }
+  }
 
-    /* 7. Tablas: permitimos scroll horizontal para que no rompan la pantalla */
-    .table-container {
-        overflow-x: auto;
-        display: block;
-    }
-    .production-table {
-        min-width: 500px; /* se asegura que la tabla no se aplaste */
-    }
-}
+      /* estilos de articulaciones si se requieren */
+
+  /* 7. Tablas: permitimos scroll horizontal para que no rompan la pantalla */
+  .table-container {
+      overflow-x: auto;
+      display: block;
+  }
+
+  .production-table {
+      min-width: 500px; /* se asegura que la tabla no se aplaste */
+  }
