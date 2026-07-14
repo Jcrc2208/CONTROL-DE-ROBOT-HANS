@@ -316,6 +316,7 @@ body {
 }
 
 
+<<<<<<< HEAD
 /* --- ADAPTACIÓN RESPONSIVE PARA MÓVILES (version mejorada) --- */
 @media (max-width: 850px) {
     
@@ -363,4 +364,90 @@ body {
         background-color: #0052cc;
     }    
     /* ... el resto de tu código @media (sidebar, etc.) se queda igual ... */
+=======
+/* --- ADAPTACIÓN RESPONSIVE PARA MÓVILES (REPARADO) --- */
+@media (max-width: 850px) {
+    
+    /* 1. Ajuste del Header */
+    .main-header {
+        padding: 0 5%;
+    }
+    
+    /* 2. Ajuste del Scrollytelling (Stack vertical) */
+    .sticky-visual-viewer {
+        flex-direction: column; /* Apila imagen arriba, texto abajo */
+        height: auto;
+    }
+    .image-stack, .text-panels {
+        width: 100% !important; /* Ocupan todo el ancho */
+        height: 50vh;
+    }
+    .panel-card {
+        padding: 20px;
+        text-align: center;
+    }
+    .panel-card h2 { 
+        font-size: 1.8rem; 
+    }
+
+    /* 3. Ajuste del Login (Layout vertical) */
+    .login-layout {
+        flex-direction: column;
+        gap: 30px;
+        text-align: center;
+    }
+    .login-info {
+        width: 100% !important;
+    }
+    .login-info h2 { 
+        font-size: 2.2rem; 
+    }
+    .login-panel {
+        width: 95% !important; 
+        padding: 25px;
+    }
+
+    /* 4. BOTÓN HAMBURGUESA (Soporta id y clase) */
+    #hamburger-btn, .hamburger-menu {
+        display: flex !important; /* Forza a que se muestre en móviles */
+        flex-direction: column;
+        justify-content: space-between;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 32px;    
+        height: 22px;   
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        z-index: 1100; /* Por encima de la barra lateral */
+        padding: 0;
+    }
+
+    #hamburger-btn span, .hamburger-menu span {
+        display: block;
+        width: 100%;
+        height: 3px;
+        background-color: #0f172a; 
+        border-radius: 3px;
+        transition: all 0.3s ease-in-out;
+        transform-origin: left center; 
+    }
+
+    /* Animación a "X" al abrirse */
+    #hamburger-btn.active span:nth-child(1), .hamburger-menu.active span:nth-child(1) {
+        transform: rotate(45deg) translate(2px, -2px);
+        background-color: #0052cc;
+    }
+    
+    #hamburger-btn.active span:nth-child(2), .hamburger-menu.active span:nth-child(2) {
+        opacity: 0;
+        transform: scaleX(0); 
+    }
+    
+    #hamburger-btn.active span:nth-child(3), .hamburger-menu.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(2px, 2px);
+        background-color: #0052cc;
+    }    
+>>>>>>> 6a2cf799364a03aa2b6b142189c9f1094ae84032
 }
